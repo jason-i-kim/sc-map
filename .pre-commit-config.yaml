@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: verify-migrations
+        name: Verify migrations have down files
+        entry: ./scripts/verify-migrations.sh
+        language: script
+        types: [sql]
+        files: ^src/lib/db/migrations/.*\.up\.sql$
