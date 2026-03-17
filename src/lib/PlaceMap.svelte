@@ -20,7 +20,7 @@
 	}
 
 	onMount(async () => {
-		setOptions({ key: 'REDACTED_GOOGLE_MAPS_API_KEY' });
+		setOptions({ key: import.meta.env.VITE_GOOGLE_MAPS_API_KEY });
 
 		const { Map } = await importLibrary('maps');
 
