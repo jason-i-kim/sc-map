@@ -1,3 +1,3 @@
 import { SQL } from 'bun';
 
-export const sql = new SQL(process.env.SQL_URL!);
+export const sql = new SQL({ url: process.env.SQL_URL!, bigint: true });
