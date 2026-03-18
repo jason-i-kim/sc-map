@@ -83,8 +83,7 @@
 	}
 
 	.search-container {
-		width: 100%;
-		max-width: 376px;
+		width: 376px;
 		border-radius: 24px;
 		transition: box-shadow 0.3s;
 		box-shadow:
