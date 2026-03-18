@@ -6,8 +6,13 @@
 
 	let {
 		placeholder = 'Search Google Maps',
-		onchange
-	}: { placeholder?: string; onchange?: (query: string) => void } = $props();
+		onchange,
+		onsuggestionclick
+	}: {
+		placeholder?: string;
+		onchange?: (query: string) => void;
+		onsuggestionclick?: (suggestion: Suggestion) => void;
+	} = $props();
 
 	let focused = $state(false);
 	let query = $state('');
@@ -55,7 +60,7 @@
 		</div>
 
 		{#if open}
-			<SearchSuggestionList {suggestions} />
+			<SearchSuggestionList {suggestions} {onsuggestionclick} />
 		{/if}
 	</div>
 </div>

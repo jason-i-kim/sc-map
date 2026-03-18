@@ -4,7 +4,10 @@
 	import { CATEGORIES } from '$lib/categories';
 	import PinIcon from '$lib/icons/PinIcon.svelte';
 
-	let { suggestions }: { suggestions: Suggestion[] } = $props();
+	let {
+		suggestions,
+		onsuggestionclick
+	}: { suggestions: Suggestion[]; onsuggestionclick?: (suggestion: Suggestion) => void } = $props();
 </script>
 
 <ul class="suggestions-list" id="map-search-listbox" role="listbox">
@@ -16,6 +19,7 @@
 				icon={category ? { color: category.color, glyph: category.glyphText } : PinIcon}
 				primary={suggestion.data.name}
 				secondary={suggestion.data.formatted_address}
+				onclick={() => onsuggestionclick?.(suggestion)}
 			/>
 		</li>
 	{/each}
