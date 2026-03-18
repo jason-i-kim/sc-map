@@ -1,10 +1,12 @@
 <script lang="ts">
-	import HistoryIcon from '$lib/icons/HistoryIcon.svelte';
-	import PinIcon from '$lib/icons/PinIcon.svelte';
+	import type { Component } from 'svelte';
 	import ArrowFillIcon from '$lib/icons/ArrowFillIcon.svelte';
 
+	type PlaceGlyph = { color: string; glyph: string };
+	type Icon = Component | PlaceGlyph;
+
 	type Props = {
-		icon: 'pin' | 'history';
+		icon: Icon;
 		primary: string;
 		secondary: string;
 		onclick?: () => void;
@@ -15,10 +17,10 @@
 
 <button class="suggestion-item" {onclick}>
 	<div class="suggestion-icon">
-		{#if icon === 'history'}
-			<HistoryIcon />
+		{#if 'glyph' in icon}
+			<span class="place-glyph" style="background: {icon.color}">{icon.glyph}</span>
 		{:else}
-			<PinIcon />
+			<icon></icon>
 		{/if}
 	</div>
 
@@ -66,6 +68,16 @@
 		align-items: center;
 		justify-content: center;
 		color: #5f6368;
+	}
+
+	.place-glyph {
+		width: 100%;
+		height: 100%;
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 18px;
 	}
 
 	.suggestion-text {

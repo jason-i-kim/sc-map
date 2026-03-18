@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import SearchSuggestionList from './SearchSuggestionList.svelte';
+import type { Suggestion } from '$lib/schemas/search';
 
 const meta = {
 	title: 'Search/SearchSuggestionList',
@@ -13,114 +14,87 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mixedSuggestions = [
-	{ id: '1', icon: 'pin' as const, primary: 'New York, NY', secondary: 'New York, United States' },
-	{
-		id: '2',
-		icon: 'pin' as const,
-		primary: 'Los Angeles, CA',
-		secondary: 'California, United States'
-	},
-	{
-		id: '3',
-		icon: 'history' as const,
-		primary: 'Chicago, IL',
-		secondary: 'Illinois, United States'
-	},
-	{ id: '4', icon: 'history' as const, primary: 'Houston, TX', secondary: 'Texas, United States' },
-	{
-		id: '5',
-		icon: 'pin' as const,
-		primary: 'Philadelphia, PA',
-		secondary: 'Pennsylvania, United States'
+const googleSuggestion = (
+	place_id: string,
+	name: string,
+	formatted_address: string
+): Suggestion => ({
+	source: 'google',
+	data: { place_id, name, formatted_address, geometry: { location: { lat: 0, lng: 0 } }, types: [] }
+});
+
+const dbSuggestion = (
+	id: number,
+	name: string,
+	formatted_address: string,
+	type: 'RESTAURANT' | 'BAR' | 'BAKERY'
+): Suggestion => ({
+	source: 'db',
+	data: {
+		id: String(id),
+		name,
+		formatted_address,
+		type,
+		lat: 0,
+		lng: 0,
+		google_place_id: `gp_${id}`,
+		submitted_by: '1',
+		created_at: new Date().toISOString()
 	}
-];
+});
 
 export const Default: Story = {
 	args: {
-		suggestions: mixedSuggestions
-	}
-};
-
-export const AllPins: Story = {
-	args: {
 		suggestions: [
-			{ id: '1', icon: 'pin', primary: 'Times Square', secondary: 'Manhattan, New York, NY' },
-			{ id: '2', icon: 'pin', primary: 'Central Park', secondary: 'Manhattan, New York, NY' },
-			{ id: '3', icon: 'pin', primary: 'Brooklyn Bridge', secondary: 'Brooklyn, New York, NY' },
-			{
-				id: '4',
-				icon: 'pin',
-				primary: 'Statue of Liberty',
-				secondary: 'Liberty Island, New York, NY'
-			}
+			dbSuggestion(1, "Rao's Restaurant", '455 E 114th St, New York, NY 10029', 'RESTAURANT'),
+			dbSuggestion(2, 'The Dead Rabbit', '30 Water St, New York, NY 10004', 'BAR'),
+			dbSuggestion(3, 'Dominique Ansel Bakery', '189 Spring St, New York, NY 10012', 'BAKERY'),
+			googleSuggestion('gp_a', 'Le Bernardin', '155 W 51st St, New York, NY 10019'),
+			googleSuggestion('gp_b', 'Per Se', '10 Columbus Cir, New York, NY 10019')
 		]
 	}
 };
 
-export const AllHistory: Story = {
+export const DBOnly: Story = {
 	args: {
 		suggestions: [
-			{ id: '1', icon: 'history', primary: 'Nobu', secondary: '105 Hudson St, New York, NY' },
-			{
-				id: '2',
-				icon: 'history',
-				primary: 'Le Bernardin',
-				secondary: '155 W 51st St, New York, NY'
-			},
-			{ id: '3', icon: 'history', primary: 'Per Se', secondary: '10 Columbus Cir, New York, NY' }
+			dbSuggestion(1, 'Nobu', '105 Hudson St, New York, NY 10013', 'RESTAURANT'),
+			dbSuggestion(2, 'Employees Only', '510 Hudson St, New York, NY 10014', 'BAR'),
+			dbSuggestion(3, 'Maison Kayser', '1294 3rd Ave, New York, NY 10021', 'BAKERY')
+		]
+	}
+};
+
+export const GoogleOnly: Story = {
+	args: {
+		suggestions: [
+			googleSuggestion('gp_1', 'Times Square', 'Manhattan, New York, NY'),
+			googleSuggestion('gp_2', 'Central Park', 'Manhattan, New York, NY'),
+			googleSuggestion('gp_3', 'Brooklyn Bridge', 'Brooklyn, New York, NY')
 		]
 	}
 };
 
 export const SingleItem: Story = {
 	args: {
-		suggestions: [
-			{ id: '1', icon: 'pin', primary: 'San Francisco, CA', secondary: 'California, United States' }
-		]
-	}
-};
-
-export const ManyItems: Story = {
-	args: {
-		suggestions: [
-			{ id: '1', icon: 'pin', primary: 'New York, NY', secondary: 'New York, United States' },
-			{
-				id: '2',
-				icon: 'history',
-				primary: 'Los Angeles, CA',
-				secondary: 'California, United States'
-			},
-			{ id: '3', icon: 'pin', primary: 'Chicago, IL', secondary: 'Illinois, United States' },
-			{ id: '4', icon: 'history', primary: 'Houston, TX', secondary: 'Texas, United States' },
-			{ id: '5', icon: 'pin', primary: 'Phoenix, AZ', secondary: 'Arizona, United States' },
-			{
-				id: '6',
-				icon: 'history',
-				primary: 'Philadelphia, PA',
-				secondary: 'Pennsylvania, United States'
-			},
-			{ id: '7', icon: 'pin', primary: 'San Antonio, TX', secondary: 'Texas, United States' },
-			{ id: '8', icon: 'history', primary: 'San Diego, CA', secondary: 'California, United States' }
-		]
+		suggestions: [googleSuggestion('gp_1', 'San Francisco, CA', 'California, United States')]
 	}
 };
 
 export const LongText: Story = {
 	args: {
 		suggestions: [
-			{
-				id: '1',
-				icon: 'pin',
-				primary: "Rao's Restaurant - East Harlem, Manhattan, New York City",
-				secondary: '455 E 114th St, New York, NY 10029, United States of America'
-			},
-			{
-				id: '2',
-				icon: 'history',
-				primary: 'The French Laundry by Thomas Keller',
-				secondary: '6640 Washington St, Yountville, Napa Valley, CA 94599'
-			}
+			dbSuggestion(
+				1,
+				"Rao's Restaurant - East Harlem, Manhattan, New York City",
+				'455 E 114th St, New York, NY 10029, United States of America',
+				'RESTAURANT'
+			),
+			googleSuggestion(
+				'gp_1',
+				'The French Laundry by Thomas Keller',
+				'6640 Washington St, Yountville, Napa Valley, CA 94599'
+			)
 		]
 	}
 };

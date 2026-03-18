@@ -2,44 +2,28 @@
 	import SearchSuggestionList from './SearchSuggestionList.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { SEARCH_BLUR_DELAY_MS } from '$lib/components/ui-constants';
+	import { SuggestionSchema, type Suggestion } from '$lib/schemas/search';
 
-	let { placeholder = 'Search Google Maps' }: { placeholder?: string } = $props();
+	let {
+		placeholder = 'Search Google Maps',
+		onchange
+	}: { placeholder?: string; onchange?: (query: string) => void } = $props();
 
 	let focused = $state(false);
+	let query = $state('');
+	let suggestions = $state<Suggestion[]>([]);
 	let open = $derived(focused);
 
-	const suggestions = [
-		{
-			id: '1',
-			icon: 'pin' as const,
-			primary: 'New York, NY',
-			secondary: 'New York, United States'
-		},
-		{
-			id: '2',
-			icon: 'pin' as const,
-			primary: 'Los Angeles, CA',
-			secondary: 'California, United States'
-		},
-		{
-			id: '3',
-			icon: 'history' as const,
-			primary: 'Chicago, IL',
-			secondary: 'Illinois, United States'
-		},
-		{
-			id: '4',
-			icon: 'history' as const,
-			primary: 'Houston, TX',
-			secondary: 'Texas, United States'
-		},
-		{
-			id: '5',
-			icon: 'pin' as const,
-			primary: 'Philadelphia, PA',
-			secondary: 'Pennsylvania, United States'
+	async function handleInput(e: Event) {
+		query = (e.target as HTMLInputElement).value;
+		onchange?.(query);
+		if (!query.trim()) {
+			suggestions = [];
+			return;
 		}
-	];
+		const res = await fetch(`/places/search?q=${encodeURIComponent(query)}`);
+		suggestions = SuggestionSchema.array().parse(await res.json());
+	}
 </script>
 
 <div class="search-wrapper" role="search">
@@ -59,6 +43,7 @@
 					{placeholder}
 					onfocus={() => (focused = true)}
 					onblur={() => setTimeout(() => (focused = false), SEARCH_BLUR_DELAY_MS)}
+					oninput={handleInput}
 				/>
 			</form>
 
