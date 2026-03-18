@@ -1,15 +1,49 @@
 services:
   db:
     image: postgres:17
+    restart: unless-stopped
     environment:
       POSTGRES_USER: sc_map
       POSTGRES_PASSWORD: sc_map
       POSTGRES_DB: sc_map
-    ports:
-      - '5432:5432'
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sc_map -d sc_map"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      args:
+        PUBLIC_GOOGLE_MAPS_API_KEY: ${PUBLIC_GOOGLE_MAPS_API_KEY}
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      SQL_URL: postgres://sc_map:sc_map@db:5432/sc_map
+      ORIGIN: ${ORIGIN:-http://localhost}
+      SESSION_SECRET: ${SESSION_SECRET}
+      DISCORD_CLIENT_SECRET: ${DISCORD_CLIENT_SECRET}
+      DISCORD_REDIRECT_URI: ${DISCORD_REDIRECT_URI}
+      DISCORD_GUILD_ID: ${DISCORD_GUILD_ID}
+      DISCORD_GOATED_ROLE_ID: ${DISCORD_GOATED_ROLE_ID}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
 
 volumes:
   db_data:
