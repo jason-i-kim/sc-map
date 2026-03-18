@@ -6,7 +6,7 @@ import {
 	DISCORD_REDIRECT_URI,
 	DISCORD_GUILD_ID,
 	DISCORD_GOATED_ROLE_ID
-} from '$env/static/private';
+} from '$env/dynamic/private';
 import { sql } from '$lib/db';
 import { UsersDao } from '$lib/dao/users';
 import {
