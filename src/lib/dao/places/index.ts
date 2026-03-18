@@ -83,4 +83,12 @@ export class PlacesDao {
 			throw e;
 		}
 	}
+
+	public async searchPlaces(q: string): Promise<Place[]> {
+		const results: unknown[] = await this.sql`
+			SELECT * FROM places
+			WHERE to_tsvector('simple', name) @@ plainto_tsquery('simple', ${q})
+		`;
+		return results.map((row: unknown) => PlaceSchema.parse(row));
+	}
 }

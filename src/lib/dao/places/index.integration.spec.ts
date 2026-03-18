@@ -177,5 +177,43 @@ describe('Integration', () => {
 				});
 			});
 		});
+
+		describe('searchPlaces', () => {
+			test('returns matching places by name', async () => {
+				await dao.insertPlace(getBaseInsert());
+				const places = await dao.searchPlaces('Test');
+				expect(places.length).toBe(1);
+				expect(places[0].name).toBe('Test Restaurant');
+			});
+
+			test('returns multiple matching places', async () => {
+				await dao.insertPlace(getBaseInsert());
+				await dao.insertPlace({
+					...getBaseInsert(),
+					google_place_id: 'test_place_2',
+					name: 'Test Cafe'
+				});
+				const places = await dao.searchPlaces('Test');
+				expect(places.length).toBe(2);
+			});
+
+			test('returns empty array when no matches', async () => {
+				await dao.insertPlace(getBaseInsert());
+				const places = await dao.searchPlaces('NonExistent');
+				expect(places).toEqual([]);
+			});
+
+			test('searches across all places', async () => {
+				await dao.insertPlace(getBaseInsert());
+				await dao.insertPlace({
+					...getBaseInsert(),
+					google_place_id: 'pizza_place',
+					name: 'Pizza Palace'
+				});
+				const places = await dao.searchPlaces('Pizza');
+				expect(places.length).toBe(1);
+				expect(places[0].name).toBe('Pizza Palace');
+			});
+		});
 	});
 });
