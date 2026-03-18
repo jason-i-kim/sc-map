@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { fn } from 'storybook/test';
-import SearchSuggestion from './SearchSuggestion.svelte';
+import SearchResultComponent from './SearchResult.svelte';
 import PinIcon from '$lib/icons/PinIcon.svelte';
 
 const meta = {
-	title: 'Search/SearchSuggestion',
-	component: SearchSuggestion,
+	component: SearchResultComponent,
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'padded'
@@ -13,7 +12,7 @@ const meta = {
 	args: {
 		onclick: fn()
 	}
-} satisfies Meta<typeof SearchSuggestion>;
+} satisfies Meta<typeof SearchResultComponent>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -28,7 +27,7 @@ export const GooglePlace: Story = {
 
 export const Restaurant: Story = {
 	args: {
-		icon: { color: '#E8472A', glyph: '🍽️' },
+		icon: { color: '#E8472A', glyphText: '🍽️' },
 		primary: "Rao's Restaurant",
 		secondary: '455 E 114th St, New York, NY 10029'
 	}
@@ -36,7 +35,7 @@ export const Restaurant: Story = {
 
 export const Bar: Story = {
 	args: {
-		icon: { color: '#6B4FBB', glyph: '🍸' },
+		icon: { color: '#6B4FBB', glyphText: '🍸' },
 		primary: 'The Dead Rabbit',
 		secondary: '30 Water St, New York, NY 10004'
 	}
@@ -44,7 +43,7 @@ export const Bar: Story = {
 
 export const Bakery: Story = {
 	args: {
-		icon: { color: '#F0A500', glyph: '🥐' },
+		icon: { color: '#F0A500', glyphText: '🥐' },
 		primary: 'Dominique Ansel Bakery',
 		secondary: '189 Spring St, New York, NY 10012'
 	}

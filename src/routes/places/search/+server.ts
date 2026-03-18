@@ -1,7 +1,7 @@
 import { PlacesDao } from '$lib/dao/places';
 import { sql } from '$lib/db';
 import { searchGooglePlaces } from '$lib/server/google-places';
-import { SuggestionSchema } from '$lib/schemas/search';
+import { type SearchResult } from '$lib/schemas/search';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -30,20 +30,23 @@ export const GET: RequestHandler = async ({ url }) => {
 	const dbPlaceIds = new Set(dbResults.map((p) => p.google_place_id));
 	const uniqueGoogleResults = googleResults.filter((r) => !dbPlaceIds.has(r.place_id)).slice(0, 4);
 
-	const combined = SuggestionSchema.array().parse([
-		...dbResults.map((p) => ({
-			source: 'db' as const,
-			data: {
-				...p,
-				id: p.id.toString(),
-				submitted_by: p.submitted_by.toString(),
-				created_at: p.created_at.toISOString()
-			}
-		})),
-		...uniqueGoogleResults.map((r) => ({ source: 'google' as const, data: r }))
-	]);
+	const searchResults: SearchResult[] = [
+		...dbResults,
+		...uniqueGoogleResults.map<SearchResult>((result) => ({
+			name: result.name,
+			lat: result.geometry.location.lat,
+			lng: result.geometry.location.lng,
+			formatted_address: result.formatted_address,
+			google_place_id: result.place_id,
+			type: result.types.includes('bar')
+				? 'BAR'
+				: result.types.includes('bakery')
+					? 'BAKERY'
+					: 'RESTAURANT'
+		}))
+	];
 
-	return new Response(JSON.stringify(combined), {
+	return new Response(JSON.stringify(searchResults), {
 		headers: { 'Content-Type': 'application/json' }
 	});
 };

@@ -2,7 +2,7 @@
 	import type { Component } from 'svelte';
 	import ArrowFillIcon from '$lib/icons/ArrowFillIcon.svelte';
 
-	type PlaceGlyph = { color: string; glyph: string };
+	type PlaceGlyph = { color: string; glyphText: string };
 	type Icon = Component | PlaceGlyph;
 
 	type Props = {
@@ -17,11 +17,11 @@
 
 <button class="suggestion-item" {onclick}>
 	<div class="suggestion-icon">
-		{#if 'glyph' in icon}
-			<span class="place-glyph" style="background: {icon.color}">{icon.glyph}</span>
+		{#if 'glyphText' in icon}
+			<span class="place-glyph" style="background: {icon.color}">{icon.glyphText}</span>
 		{:else}
-			{@const Icon = icon}
-			<Icon></Icon>
+			{@const SVGIcon = icon}
+			<SVGIcon />
 		{/if}
 	</div>
 
