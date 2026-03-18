@@ -5,15 +5,14 @@
 	import SideDrawer from '$lib/components/SideDrawer.svelte';
 	import { CATEGORIES } from '$lib/categories';
 	import type { Place } from '$lib/dao/places/types.js';
-	import type { Suggestion } from '$lib/schemas/search';
-	// import { createMutation } from '@tanstack/svelte-query';
-	// import { addPlaceOptions } from '$lib/queries';
+	import { isPlace, type SearchResult } from '$lib/schemas/search';
+	// import { createMutation } from '@tanstack/svelte-SearchResultrt { addPlaceOptions } from '$lib/queries';
 	// import { invalidateAll } from '$app/navigation';
 
 	let { data } = $props();
 
 	let activeFilter = $state<Place['type'] | null>(null);
-	let selectedPlace = $state<{
+	let selectedLocation = $state<{
 		lat: number;
 		lng: number;
 		name: string;
@@ -26,24 +25,17 @@
 		activeFilter ? data.places.filter((place) => place.type === activeFilter) : data.places
 	);
 
-	function handleSuggestionClick(suggestion: Suggestion) {
-		if (suggestion.source === 'db') {
-			selectedPlace = {
-				lat: suggestion.data.lat,
-				lng: suggestion.data.lng,
-				name: suggestion.data.name,
-				placeId: suggestion.data.google_place_id,
-				address: suggestion.data.formatted_address
-			};
+	function handleLocationClick(searchResult: SearchResult) {
+		selectedLocation = {
+			lat: searchResult.lat,
+			lng: searchResult.lng,
+			name: searchResult.name,
+			placeId: searchResult.google_place_id,
+			address: searchResult.formatted_address
+		};
+
+		if (isPlace(searchResult)) {
 			drawerOpen = true;
-		} else {
-			selectedPlace = {
-				lat: suggestion.data.geometry.location.lat,
-				lng: suggestion.data.geometry.location.lng,
-				name: suggestion.data.name,
-				placeId: suggestion.data.place_id,
-				address: suggestion.data.formatted_address
-			};
 		}
 	}
 
@@ -55,35 +47,26 @@
 <PlaceMap
 	categories={CATEGORIES}
 	places={filteredPlaces}
-	onplaceclick={(place) => {
-		selectedPlace = {
-			lat: place.lat,
-			lng: place.lng,
-			name: place.name,
-			placeId: place.google_place_id,
-			address: place.formatted_address
-		};
-		drawerOpen = true;
-	}}
-	{selectedPlace}
+	onplaceclick={handleLocationClick}
+	selectedPlace={selectedLocation}
 	onmapclick={() => {
-		selectedPlace = null;
+		selectedLocation = null;
 		drawerOpen = false;
 	}}
 	onaddtolist={handleAddToList}
 />
-<SideDrawer bind:open={drawerOpen} title={selectedPlace?.name ?? ''} width="396px">
-	{#if selectedPlace}
+<SideDrawer bind:open={drawerOpen} title={selectedLocation?.name ?? ''} width="396px">
+	{#if selectedLocation}
 		<div class="place-details">
 			<p class="place-type">
-				{data.places.find((p) => p.google_place_id === selectedPlace?.placeId)?.type ?? 'Place'}
+				{data.places.find((p) => p.google_place_id === selectedLocation?.placeId)?.type ?? 'Place'}
 			</p>
-			<p class="place-address">{selectedPlace.address}</p>
+			<p class="place-address">{selectedLocation.address}</p>
 		</div>
 	{/if}
 </SideDrawer>
 <div class="controls">
-	<SearchBar placeholder="Search for something yummy" onsuggestionclick={handleSuggestionClick} />
+	<SearchBar placeholder="Search for something yummy" onsearchresultclick={handleLocationClick} />
 	<FilterChips
 		filters={CATEGORIES}
 		{activeFilter}

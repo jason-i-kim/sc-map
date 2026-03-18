@@ -1,19 +1,19 @@
 <script lang="ts">
-	import SearchSuggestionList from './SearchSuggestionList.svelte';
+	import SearchResultList from './SearchResultList.svelte';
 	import SearchIcon from '$lib/icons/SearchIcon.svelte';
 	import { SEARCH_BLUR_DELAY_MS } from '$lib/components/ui-constants';
-	import type { Suggestion } from '$lib/schemas/search';
+	import type { SearchResult } from '$lib/schemas/search';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { searchPlacesOptions } from '$lib/queries';
 
 	let {
 		placeholder = 'Search Google Maps',
 		onchange,
-		onsuggestionclick
+		onsearchresultclick
 	}: {
 		placeholder?: string;
 		onchange?: (query: string) => void;
-		onsuggestionclick?: (suggestion: Suggestion) => void;
+		onsearchresultclick?: (searchResult: SearchResult) => void;
 	} = $props();
 
 	let focused = $state(false);
@@ -58,7 +58,7 @@
 		</div>
 
 		{#if open}
-			<SearchSuggestionList {suggestions} {onsuggestionclick} />
+			<SearchResultList searchResults={suggestions} onsuggestionclick={onsearchresultclick} />
 		{/if}
 	</div>
 </div>
