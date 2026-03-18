@@ -40,6 +40,7 @@ describe('Integration', () => {
 				name: 'Test Restaurant',
 				lat: 40.7128,
 				lng: -74.006,
+				formatted_address: '123 Test St, New York, NY 10001',
 				google_place_id: 'test_google_place_id',
 				type: 'RESTAURANT',
 				submitted_by: testUserId

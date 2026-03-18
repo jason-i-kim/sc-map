@@ -14,6 +14,7 @@ const placeRow = {
 	name: 'Test Bakery',
 	lat: 40.7128,
 	lng: -74.006,
+	formatted_address: '123 Test St, New York, NY 10001',
 	google_place_id: 'abc123',
 	type: 'BAKERY',
 	submitted_by: 42n,
@@ -24,6 +25,7 @@ const placeInsert: PlaceInsert = {
 	name: 'Test Bakery',
 	lat: 40.7128,
 	lng: -74.006,
+	formatted_address: '123 Test St, New York, NY 10001',
 	google_place_id: 'abc123',
 	type: 'BAKERY',
 	submitted_by: 42n

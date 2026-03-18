@@ -5,6 +5,7 @@ export const PlaceSchema = z.object({
 	name: z.string(),
 	lat: z.number(),
 	lng: z.number(),
+	formatted_address: z.string(),
 	google_place_id: z.string(),
 	type: z.enum(['RESTAURANT', 'BAR', 'BAKERY']),
 	submitted_by: z.bigint(),

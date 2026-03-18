@@ -16,14 +16,15 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS places (
-    id              BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name            TEXT NOT NULL,
-    lat             FLOAT8 NOT NULL,
-    lng             FLOAT8 NOT NULL,
-    google_place_id TEXT UNIQUE NOT NULL,
-    type            TEXT NOT NULL,
-    submitted_by    BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    id                 BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name               TEXT NOT NULL,
+    lat                FLOAT8 NOT NULL,
+    lng                FLOAT8 NOT NULL,
+    formatted_address  TEXT NOT NULL,
+    google_place_id    TEXT UNIQUE NOT NULL,
+    type               TEXT NOT NULL,
+    submitted_by       BIGINT NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     CONSTRAINT places_type_check
         CHECK (type IN ('RESTAURANT', 'BAR', 'BAKERY'))
