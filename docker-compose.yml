@@ -27,6 +27,7 @@ services:
       context: .
       args:
         PUBLIC_GOOGLE_MAPS_API_KEY: ${PUBLIC_GOOGLE_MAPS_API_KEY}
+        PUBLIC_DISCORD_CLIENT_ID: ${PUBLIC_DISCORD_CLIENT_ID}
     restart: unless-stopped
 
     expose:
