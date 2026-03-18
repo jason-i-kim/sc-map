@@ -20,7 +20,8 @@
 		{#if 'glyph' in icon}
 			<span class="place-glyph" style="background: {icon.color}">{icon.glyph}</span>
 		{:else}
-			<icon></icon>
+			{@const Icon = icon}
+			<Icon></Icon>
 		{/if}
 	</div>
 
