@@ -4,27 +4,21 @@
 	import type { Place } from '$lib/dao/places/types';
 	import PlaceMarker from './PlaceMarker.svelte';
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
-	import type { CategoryConfig } from './types';
+	import type { CategoryConfig, FocusedLocation } from './types';
 	import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_ID } from './map-constants';
 
 	let {
 		categories,
 		onplaceclick,
 		places,
-		selectedPlace,
+		focusedLocation,
 		onmapclick,
 		onaddtolist
 	}: {
 		categories: Record<Place['type'], CategoryConfig>;
 		places: Place[];
 		onplaceclick: (place: Place) => void;
-		selectedPlace?: {
-			lat: number;
-			lng: number;
-			name: string;
-			placeId: string;
-			address?: string;
-		} | null;
+		focusedLocation?: FocusedLocation | null;
 		onmapclick?: () => void;
 		onaddtolist?: (placeId: string) => void;
 	} = $props();
@@ -57,26 +51,26 @@
 			selectedMarker.map = null;
 			selectedMarker = null;
 		}
-		if (selectedPlace && map) {
+		if (focusedLocation && map) {
 			const handleInfoButtonClick = onaddtolist;
-			map.moveCamera({ center: { lat: selectedPlace.lat, lng: selectedPlace.lng }, zoom: 15 });
+			map.moveCamera({ center: { lat: focusedLocation.lat, lng: focusedLocation.lng }, zoom: 15 });
 			importLibrary('marker').then(({ AdvancedMarkerElement }: google.maps.MarkerLibrary) => {
-				const place = selectedPlace!;
+				const place = focusedLocation!;
 				selectedMarker = new AdvancedMarkerElement({
 					map,
 					position: { lat: place.lat, lng: place.lng },
 					title: place.name
 				});
 
-				const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${place.placeId}`;
+				const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${place.google_place_id}`;
 				infoWindow = new google.maps.InfoWindow({
 					content: `<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;max-width:220px">
 						<strong style="font-size:14px;color:#202124">${place.name}</strong>
-						${place.address ? `<p style="margin:8px 0 4px;font-size:13px;color:#70757a">${place.address}</p>` : ''}
+						${place.formatted_address ? `<p style="margin:8px 0 4px;font-size:13px;color:#70757a">${place.formatted_address}</p>` : ''}
 						<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer"
 							style="font-size:13px;color:#1a73e8;text-decoration:none">View on Google Maps</a>
 						<br/>
-						<button data-place-id="${place.placeId}"
+						<button data-place-id="${place.google_place_id}"
 							style="margin-top:8px;padding:6px 12px;background:#1a73e8;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer">
 							Add to list
 						</button>
@@ -84,8 +78,8 @@
 				});
 				infoWindow.addListener('domready', () => {
 					document
-						.querySelector<HTMLButtonElement>(`[data-place-id="${place.placeId}"]`)
-						?.addEventListener('click', () => handleInfoButtonClick?.(place.placeId));
+						.querySelector<HTMLButtonElement>(`[data-place-id="${place.google_place_id}"]`)
+						?.addEventListener('click', () => handleInfoButtonClick?.(place.google_place_id));
 				});
 				infoWindow.open({ map, anchor: selectedMarker });
 			});

@@ -5,20 +5,13 @@
 	import SideDrawer from '$lib/components/SideDrawer.svelte';
 	import { CATEGORIES } from '$lib/categories';
 	import type { Place } from '$lib/dao/places/types.js';
+	import type { FocusedLocation } from '$lib/components/types.js';
 	import { isPlace, type SearchResult } from '$lib/schemas/search';
-	// import { createMutation } from '@tanstack/svelte-SearchResultrt { addPlaceOptions } from '$lib/queries';
-	// import { invalidateAll } from '$app/navigation';
 
 	let { data } = $props();
 
 	let activeFilter = $state<Place['type'] | null>(null);
-	let selectedLocation = $state<{
-		lat: number;
-		lng: number;
-		name: string;
-		placeId: string;
-		address?: string;
-	} | null>(null);
+	let focusedLocation = $state<FocusedLocation | null>(null);
 	let drawerOpen = $state(false);
 
 	let filteredPlaces = $derived(
@@ -26,13 +19,7 @@
 	);
 
 	function handleLocationClick(searchResult: SearchResult) {
-		selectedLocation = {
-			lat: searchResult.lat,
-			lng: searchResult.lng,
-			name: searchResult.name,
-			placeId: searchResult.google_place_id,
-			address: searchResult.formatted_address
-		};
+		focusedLocation = searchResult;
 
 		if (isPlace(searchResult)) {
 			drawerOpen = true;
@@ -48,20 +35,21 @@
 	categories={CATEGORIES}
 	places={filteredPlaces}
 	onplaceclick={handleLocationClick}
-	selectedPlace={selectedLocation}
+	{focusedLocation}
 	onmapclick={() => {
-		selectedLocation = null;
+		focusedLocation = null;
 		drawerOpen = false;
 	}}
 	onaddtolist={handleAddToList}
 />
-<SideDrawer bind:open={drawerOpen} title={selectedLocation?.name ?? ''} width="396px">
-	{#if selectedLocation}
+<SideDrawer bind:open={drawerOpen} title={focusedLocation?.name ?? ''} width="396px">
+	{#if focusedLocation}
 		<div class="place-details">
 			<p class="place-type">
-				{data.places.find((p) => p.google_place_id === selectedLocation?.placeId)?.type ?? 'Place'}
+				{data.places.find((p) => p.google_place_id === focusedLocation?.google_place_id)?.type ??
+					'Place'}
 			</p>
-			<p class="place-address">{selectedLocation.address}</p>
+			<p class="place-address">{focusedLocation.formatted_address}</p>
 		</div>
 	{/if}
 </SideDrawer>
