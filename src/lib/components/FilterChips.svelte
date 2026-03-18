@@ -1,44 +1,33 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
 	import FilterChip from './FilterChip.svelte';
-	import FilterRestaurantIcon from '$lib/icons/FilterRestaurantIcon.svelte';
 	import type { Place } from '$lib/dao/places/types';
-	import FilterBarIcon from '$lib/icons/FilterBarIcon.svelte';
-	import FilterBakeryIcon from '$lib/icons/FilterBakeryIcon.svelte';
-
-	type FilterChipItem = {
-		id: Place['type'];
-		label: string;
-		icon: Component;
-		active: boolean;
-	};
+	import type { CategoryConfig } from './types';
 
 	type Props = {
-		filters?: FilterChipItem[];
-		onchange?: (filters: FilterChipItem[]) => void;
+		filters: Record<Place['type'], CategoryConfig>;
+		activeFilter: Place['type'] | null;
+		onchange?: (activeFilter: Place['type'] | null) => void;
 	};
 
-	const defaultFilters: FilterChipItem[] = [
-		{ id: 'RESTAURANT', label: 'Restaurants', icon: FilterRestaurantIcon, active: false },
-		{ id: 'BAR', label: 'Bars', icon: FilterBarIcon, active: false },
-		{ id: 'BAKERY', label: 'Bakeries', icon: FilterBakeryIcon, active: false }
-	];
+	let { filters, activeFilter = null, onchange }: Props = $props();
 
-	let { filters = defaultFilters, onchange }: Props = $props();
-
-	function toggleFilter(id: string) {
-		filters = filters.map((f) => (f.id === id ? { ...f, active: !f.active } : f));
-		onchange?.(filters);
+	function toggleFilter(id: Place['type']) {
+		let newFilter: Place['type'] | null = null;
+		if (activeFilter !== id) {
+			newFilter = id;
+		}
+		onchange?.(newFilter);
 	}
 </script>
 
 <div class="filter-chips" role="group" aria-label="Place filters">
-	{#each filters as filter (filter.id)}
+	{#each Object.entries(filters) as [id, filter] (id)}
+		{@const filterId = id as Place['type']}
 		<FilterChip
 			label={filter.label}
 			icon={filter.icon}
-			active={filter.active}
-			onclick={() => toggleFilter(filter.id)}
+			active={filterId === activeFilter}
+			onclick={() => toggleFilter(filterId)}
 		/>
 	{/each}
 </div>
