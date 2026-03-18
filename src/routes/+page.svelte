@@ -6,7 +6,7 @@
 
 <div class="container">
 	<h1>Salt Cellar Map</h1>
-	{#if data.user}
+	{#if data.user && (data.user.has_lifetime_access || data.user.is_current_server_member)}
 		<p>Welcome, {data.user.discord_handle}</p>
 	{:else}
 		<LoginWithDiscord />
