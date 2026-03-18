@@ -3,6 +3,8 @@
 	import FilterChip from './FilterChip.svelte';
 	import FilterRestaurantIcon from '$lib/icons/FilterRestaurantIcon.svelte';
 	import type { Place } from '$lib/dao/places/types';
+	import FilterBarIcon from '$lib/icons/FilterBarIcon.svelte';
+	import FilterBakeryIcon from '$lib/icons/FilterBakeryIcon.svelte';
 
 	type FilterChipItem = {
 		id: Place['type'];
@@ -17,7 +19,9 @@
 	};
 
 	const defaultFilters: FilterChipItem[] = [
-		{ id: 'RESTAURANT', label: 'Restaurants', icon: FilterRestaurantIcon, active: false }
+		{ id: 'RESTAURANT', label: 'Restaurants', icon: FilterRestaurantIcon, active: false },
+		{ id: 'BAR', label: 'Bars', icon: FilterBarIcon, active: false },
+		{ id: 'BAKERY', label: 'Bakeries', icon: FilterBakeryIcon, active: false }
 	];
 
 	let { filters = defaultFilters, onchange }: Props = $props();
