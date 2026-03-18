@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	});
 
 	const dbPlaceIds = new Set(dbResults.map((p) => p.google_place_id));
-	const uniqueGoogleResults = googleResults.filter((r) => !dbPlaceIds.has(r.place_id));
+	const uniqueGoogleResults = googleResults.filter((r) => !dbPlaceIds.has(r.place_id)).slice(0, 4);
 
 	const combined = SuggestionSchema.array().parse([
 		...dbResults.map((p) => ({
