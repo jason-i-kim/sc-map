@@ -59,10 +59,14 @@ export function discordUserToInsert(
 ): UserInsert {
 	const discord_handle =
 		user.discriminator === '0' ? user.username : `${user.username}#${user.discriminator}`;
+	const avatar_url = user.avatar
+		? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+		: null;
 
 	return {
 		discord_id: user.id,
 		discord_handle,
+		avatar_url,
 		google_id: null,
 		has_lifetime_access,
 		is_current_server_member

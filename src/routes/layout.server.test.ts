@@ -33,6 +33,7 @@ const baseUser: User = {
 	id: 1n,
 	discord_id: 'discord123',
 	discord_handle: 'testuser',
+	avatar_url: null,
 	google_id: null,
 	has_lifetime_access: false,
 	is_current_server_member: true,

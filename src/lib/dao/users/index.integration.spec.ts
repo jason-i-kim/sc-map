@@ -18,6 +18,7 @@ describe('Integration', () => {
 		const baseInsert: UserInsert = {
 			discord_id: 'discord_test_1',
 			discord_handle: 'testuser#0001',
+			avatar_url: null,
 			google_id: null,
 			has_lifetime_access: false,
 			is_current_server_member: true
@@ -66,6 +67,7 @@ describe('Integration', () => {
 						dao.insertUser({
 							discord_id: 'discord_other',
 							discord_handle: 'other#0003',
+							avatar_url: null,
 							google_id: 'google_dup',
 							has_lifetime_access: false,
 							is_current_server_member: false
@@ -88,6 +90,7 @@ describe('Integration', () => {
 					const second = await dao.insertUser({
 						discord_id: 'discord_test_2',
 						discord_handle: 'second#0002',
+						avatar_url: null,
 						google_id: null,
 						has_lifetime_access: false,
 						is_current_server_member: false
@@ -102,6 +105,7 @@ describe('Integration', () => {
 					const second = await dao.insertUser({
 						discord_id: 'discord_test_2',
 						discord_handle: 'second#0002',
+						avatar_url: null,
 						google_id: null,
 						has_lifetime_access: false,
 						is_current_server_member: false

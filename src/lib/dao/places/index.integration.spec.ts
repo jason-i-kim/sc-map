@@ -22,6 +22,7 @@ describe('Integration', () => {
 		const user = await usersDao.insertUser({
 			discord_id: 'discord_test_user',
 			discord_handle: 'testuser#0001',
+			avatar_url: null,
 			google_id: null,
 			has_lifetime_access: false,
 			is_current_server_member: true

@@ -4,6 +4,7 @@ export const UserSchema = z.object({
 	id: z.bigint(),
 	discord_id: z.string().nullable(),
 	discord_handle: z.string().nullable(),
+	avatar_url: z.string().nullable(),
 	google_id: z.string().nullable(),
 	has_lifetime_access: z.boolean(),
 	is_current_server_member: z.boolean(),
