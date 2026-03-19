@@ -6,6 +6,7 @@
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 	import type { CategoryConfig, FocusedLocation } from './types';
 	import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_ID } from './map-constants';
+	import { isPlace } from '$lib/schemas/search';
 
 	let {
 		categories,
@@ -70,10 +71,14 @@
 						<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer"
 							style="font-size:13px;color:#1a73e8;text-decoration:none">View on Google Maps</a>
 						<br/>
-						<button data-place-id="${place.google_place_id}"
+						${
+							!isPlace(focusedLocation)
+								? `<button data-place-id="${place.google_place_id}"
 							style="margin-top:8px;padding:6px 12px;background:#1a73e8;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer">
 							Add to list
-						</button>
+						</button>`
+								: ''
+						}
 					</div>`
 				});
 				infoWindow.addListener('domready', () => {
