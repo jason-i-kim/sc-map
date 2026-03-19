@@ -40,19 +40,19 @@
 		display: flex;
 		align-items: center;
 		width: 100%;
-		padding: 0 16px 0 8px;
+		padding: 0 var(--space-5) 0 var(--space-2);
 		height: 52px;
 		border: none;
 		background: transparent;
 		cursor: pointer;
 		text-align: left;
-		gap: 12px;
-		font-family: 'Google Sans', Roboto, Arial, sans-serif;
-		transition: background-color 0.15s;
+		gap: var(--space-4);
+		font-family: var(--font-family);
+		transition: background-color var(--duration-fast);
 	}
 
 	.suggestion-item:hover {
-		background-color: #f1f3f4;
+		background-color: var(--color-surface-alt);
 	}
 
 	.suggestion-item:hover .suggestion-fill {
@@ -63,22 +63,22 @@
 		flex-shrink: 0;
 		width: 40px;
 		height: 40px;
-		border-radius: 8px;
-		background: #e8eaed;
+		border-radius: var(--radius-md);
+		background: var(--color-surface-icon);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #5f6368;
+		color: var(--color-on-surface-variant);
 	}
 
 	.place-glyph {
 		width: 100%;
 		height: 100%;
-		border-radius: 8px;
+		border-radius: var(--radius-md);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 18px;
+		font-size: var(--text-lg);
 	}
 
 	.suggestion-text {
@@ -91,9 +91,9 @@
 
 	.suggestion-primary {
 		display: block;
-		font-size: 14px;
+		font-size: var(--text-md);
 		font-weight: 500;
-		color: #202124;
+		color: var(--color-on-surface);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -102,8 +102,8 @@
 
 	.suggestion-secondary {
 		display: block;
-		font-size: 12px;
-		color: #70757a;
+		font-size: var(--text-xs);
+		color: var(--color-on-surface-subtle);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -112,9 +112,9 @@
 
 	.suggestion-fill {
 		flex-shrink: 0;
-		color: #70757a;
+		color: var(--color-on-surface-subtle);
 		opacity: 0;
-		transition: opacity 0.15s;
+		transition: opacity var(--duration-fast);
 		display: flex;
 		align-items: center;
 	}

@@ -65,32 +65,32 @@
 		top: 10px;
 		left: 10px;
 		z-index: 100;
-		gap: 8px;
+		gap: var(--space-2);
 	}
 
 	@media (max-width: 600px) {
 		.controls {
 			flex-direction: column;
-			gap: 8px;
+			gap: var(--space-2);
 		}
 	}
 
 	.place-details {
-		padding: 20px;
+		padding: var(--space-6);
 	}
 
 	.place-type {
-		font-size: 14px;
+		font-size: var(--text-md);
 		font-weight: 500;
-		color: var(--gm-primary, #1a73e8);
+		color: var(--color-primary);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-		margin: 0 0 8px 0;
+		margin: 0 0 var(--space-2) 0;
 	}
 
 	.place-address {
-		font-size: 14px;
-		color: var(--gm-on-surface-variant, #5f6368);
+		font-size: var(--text-md);
+		color: var(--color-on-surface-variant);
 		margin: 0;
 		line-height: 1.5;
 	}

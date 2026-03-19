@@ -79,18 +79,14 @@
 <style>
 	.search-container {
 		width: 376px;
-		border-radius: 24px;
-		transition: box-shadow 0.3s;
-		box-shadow:
-			0 1px 3px rgba(60, 64, 67, 0.3),
-			0 4px 8px 3px rgba(60, 64, 67, 0.15);
+		border-radius: var(--radius-xl);
+		transition: box-shadow var(--duration-slow);
+		box-shadow: var(--shadow-material);
 	}
 
 	.search-container.open {
-		box-shadow:
-			0 2px 4px rgba(0, 0, 0, 0.2),
-			0 -1px 0 rgba(0, 0, 0, 0.02);
-		border-radius: 24px;
+		box-shadow: var(--shadow-search-open);
+		border-radius: var(--radius-xl);
 	}
 
 	.search-bar {
@@ -99,15 +95,15 @@
 		align-items: center;
 		width: 100%;
 		height: 48px;
-		background: #fff;
-		border-radius: 24px;
-		padding: 0 56px 0 16px;
+		background: var(--color-surface);
+		border-radius: var(--radius-xl);
+		padding: 0 56px 0 var(--space-5);
 		box-sizing: border-box;
-		transition: border-radius 0.15s;
+		transition: border-radius var(--duration-fast);
 	}
 
 	.search-bar.open {
-		border-radius: 24px 24px 0 0;
+		border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 	}
 
 	form {
@@ -122,16 +118,16 @@
 		border: none;
 		outline: none;
 		background: transparent;
-		font-family: 'Google Sans', Roboto, Arial, sans-serif;
-		font-size: 15px;
+		font-family: var(--font-family);
+		font-size: var(--text-base);
 		font-weight: 400;
 		line-height: 24px;
-		color: #202124;
-		transition: color 0.3s;
+		color: var(--color-on-surface);
+		transition: color var(--duration-slow);
 	}
 
 	.search-input::placeholder {
-		color: #5f6368;
+		color: var(--color-on-surface-variant);
 	}
 
 	.search-btn-wrapper {
@@ -153,22 +149,22 @@
 		height: 40px;
 		border: none;
 		background: transparent;
-		border-radius: 50%;
+		border-radius: var(--radius-full);
 		cursor: pointer;
-		color: #5f6368;
-		padding: 8px;
+		color: var(--color-on-surface-variant);
+		padding: var(--space-2);
 		transition:
-			background-color 0.2s,
-			color 0.2s;
+			background-color var(--duration-base),
+			color var(--duration-base);
 	}
 
 	.search-btn:hover {
 		background-color: rgba(95, 99, 104, 0.1);
-		color: #202124;
+		color: var(--color-on-surface);
 	}
 
 	.search-btn:focus-visible {
-		outline: 2px solid #1a73e8;
+		outline: 2px solid var(--color-primary);
 		outline-offset: 2px;
 	}
 

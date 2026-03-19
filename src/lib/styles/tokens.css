@@ -1,0 +1,84 @@
+:root {
+	/* Spacing */
+	--space-1: 6px;
+	--space-2: 8px;
+	--space-3: 10px;
+	--space-4: 12px;
+	--space-5: 16px;
+	--space-6: 20px;
+	--space-7: 24px;
+
+	/* Border radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-pill: 17px;
+	--radius-xl: 24px;
+	--radius-full: 50%;
+
+	/* Colors - primary */
+	--color-primary: #1a73e8;
+	--color-primary-active: #1967d2;
+	--color-primary-container: #e8f0fe;
+	--color-primary-container-border: #d2e3fc;
+
+	/* Colors - surface */
+	--color-surface: #ffffff;
+	--color-surface-hover: #f5f5f5;
+	--color-surface-pressed: #e8e8e8;
+	--color-surface-alt: #f1f3f4;
+	--color-surface-icon: #e8eaed;
+	--color-surface-page: #f3f4f6;
+
+	/* Colors - text */
+	--color-on-surface: #202124;
+	--color-on-surface-variant: #5f6368;
+	--color-on-surface-subtle: #70757a;
+	--color-on-surface-chip: #3c4043;
+
+	/* Colors - outline */
+	--color-outline: #e0e0e0;
+	--color-outline-chip: #dfe1e5;
+	--color-outline-login: #d1d5db;
+
+	/* Colors - login */
+	--color-login-text: #1f2937;
+	--color-login-hover: #e5e7eb;
+
+	/* Colors - tooltip */
+	--color-tooltip-bg: #303030;
+	--color-tooltip-text: #ffffff;
+
+	/* Box shadows */
+	--shadow-drawer: 2px 0 4px rgba(0, 0, 0, 0.05), 1px 0 2px rgba(0, 0, 0, 0.03);
+	--shadow-material: 0 1px 3px rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+	--shadow-search-open: 0 2px 4px rgba(0, 0, 0, 0.2), 0 -1px 0 rgba(0, 0, 0, 0.02);
+	--shadow-tooltip: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(0, 0, 0, 0.14);
+	--shadow-button: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--shadow-focus-ring: 0 0 0 3px rgba(107, 114, 128, 0.5);
+
+	/* Typography */
+	--font-family: 'Google Sans', Roboto, Arial, sans-serif;
+	--text-xs: 12px;
+	--text-sm: 13px;
+	--text-md: 14px;
+	--text-base: 15px;
+	--text-lg: 18px;
+	--text-xl: 20px;
+
+	/* Transitions */
+	--duration-fast: 0.15s;
+	--duration-base: 0.2s;
+	--duration-slow: 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-surface: #202124;
+		--color-surface-hover: #2d2d2d;
+		--color-surface-pressed: #373737;
+		--color-on-surface: #e8eaed;
+		--color-outline: #3c4043;
+		--color-tooltip-bg: #f1f3f4;
+		--color-tooltip-text: #202124;
+	}
+}

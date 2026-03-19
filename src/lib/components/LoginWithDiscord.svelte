@@ -26,39 +26,37 @@
 		align-items: center;
 		justify-content: center;
 		min-height: 100vh;
-		background-color: #f3f4f6;
+		background-color: var(--color-surface-page);
 	}
 
 	.login-button {
 		display: flex;
 		align-items: center;
-		background-color: #ffffff;
-		border: 1px solid #d1d5db;
-		border-radius: 0.5rem;
-		box-shadow:
-			0 4px 6px -1px rgba(0, 0, 0, 0.1),
-			0 2px 4px -1px rgba(0, 0, 0, 0.06);
-		padding: 0.5rem 1.5rem;
-		font-size: 0.875rem;
+		background-color: var(--color-surface);
+		border: 1px solid var(--color-outline-login);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-button);
+		padding: var(--space-2) var(--space-6);
+		font-size: var(--text-md);
 		font-weight: 500;
-		color: #1f2937;
+		color: var(--color-login-text);
 		cursor: pointer;
-		transition: background-color 0.15s;
+		transition: background-color var(--duration-fast);
 	}
 
 	.login-button:hover {
-		background-color: #e5e7eb;
+		background-color: var(--color-login-hover);
 	}
 
 	.login-button:focus {
 		outline: none;
-		box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.5);
+		box-shadow: var(--shadow-focus-ring);
 	}
 
 	.discord-icon {
 		display: flex;
 		width: 1.5rem;
 		height: 1.5rem;
-		margin-right: 0.5rem;
+		margin-right: var(--space-2);
 	}
 </style>

@@ -22,52 +22,50 @@
 	.chip {
 		display: inline-flex;
 		align-items: center;
-		gap: 6px;
-		padding: 0 8px;
+		gap: var(--space-1);
+		padding: 0 var(--space-2);
 		height: 34px;
-		border: 1px solid #dfe1e5;
-		border-radius: 17px;
-		background: #fff;
+		border: 1px solid var(--color-outline-chip);
+		border-radius: var(--radius-pill);
+		background: var(--color-surface);
 		cursor: pointer;
-		font-family: 'Google Sans', Roboto, Arial, sans-serif;
-		font-size: 13px;
+		font-family: var(--font-family);
+		font-size: var(--text-sm);
 		font-weight: 500;
-		color: #3c4043;
+		color: var(--color-on-surface-chip);
 		white-space: nowrap;
-		box-shadow:
-			0 1px 3px rgba(60, 64, 67, 0.3),
-			0 4px 8px 3px rgba(60, 64, 67, 0.15);
+		box-shadow: var(--shadow-material);
 		transition:
-			background-color 0.2s,
-			box-shadow 0.2s,
-			border-color 0.2s;
+			background-color var(--duration-base),
+			box-shadow var(--duration-base),
+			border-color var(--duration-base);
 	}
 
 	.chip:hover {
-		background: #f1f3f4;
+		background: var(--color-surface-alt);
 	}
 
 	.chip:focus-visible {
-		outline: 2px solid #1a73e8;
+		outline: 2px solid var(--color-primary);
 		outline-offset: 2px;
 	}
 
 	.chip.active {
-		background: #e8f0fe;
-		border-color: #d2e3fc;
-		color: #1967d2;
+		background: var(--color-primary-container);
+		border-color: var(--color-primary-container-border);
+		color: var(--color-primary-active);
 	}
 
 	.chip.active .chip-icon {
-		color: #1967d2;
+		color: var(--color-primary-active);
 	}
 
 	.chip-icon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #5f6368;
-		transition: color 0.2s;
+		color: var(--color-on-surface-variant);
+		transition: color var(--duration-base);
 	}
 
 	.chip-label {
