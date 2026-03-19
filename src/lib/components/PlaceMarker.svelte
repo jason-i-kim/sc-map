@@ -42,7 +42,9 @@
 			content: pin.element
 		});
 
-		marker.addListener('click', () => onclick(place));
+		marker.addListener('click', () => {
+			onclick(place);
+		});
 	});
 
 	$effect(() => {

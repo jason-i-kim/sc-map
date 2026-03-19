@@ -5,56 +5,64 @@
 	import SideDrawer from '$lib/components/SideDrawer.svelte';
 	import { CATEGORIES } from '$lib/categories';
 	import type { Place } from '$lib/dao/places/types.js';
-	import type { FocusedLocation } from '$lib/components/types.js';
-	import { isPlace, type SearchResult } from '$lib/schemas/search';
+	import { isPlace, type SearchResult } from '$lib/schemas/search.js';
 
 	let { data } = $props();
 
 	let activeFilter = $state<Place['type'] | null>(null);
-	let focusedLocation = $state<FocusedLocation | null>(null);
+	let focusedPlace = $state<Place | null>(null);
 	let drawerOpen = $state(false);
+	let searchQuery = $state('');
 
 	let filteredPlaces = $derived(
 		activeFilter ? data.places.filter((place) => place.type === activeFilter) : data.places
 	);
 
-	function handleLocationClick(searchResult: SearchResult) {
-		focusedLocation = searchResult;
+	function handlePlaceClick(place: Place) {
+		focusedPlace = place;
+		drawerOpen = true;
+		searchQuery = place.name;
+	}
 
+	function handleSearchResultClick(searchResult: SearchResult) {
 		if (isPlace(searchResult)) {
-			drawerOpen = true;
+			handlePlaceClick(searchResult);
 		}
 	}
 
-	function handleAddToList() {
-		drawerOpen = true;
+	function handleMapClick() {
+		focusedPlace = null;
+		drawerOpen = false;
+		searchQuery = '';
 	}
+
+	// function handleAddToList() {}
 </script>
 
 <PlaceMap
 	categories={CATEGORIES}
 	places={filteredPlaces}
-	onplaceclick={handleLocationClick}
-	{focusedLocation}
-	onmapclick={() => {
-		focusedLocation = null;
-		drawerOpen = false;
-	}}
-	onaddtolist={handleAddToList}
+	onplaceclick={handlePlaceClick}
+	onmapclick={handleMapClick}
+	// onaddtolist={handleAddToList}
 />
-<SideDrawer bind:open={drawerOpen} title={focusedLocation?.name ?? ''} width="396px">
-	{#if focusedLocation}
+<SideDrawer bind:open={drawerOpen} title={focusedPlace?.name ?? ''} width="396px">
+	{#if focusedPlace}
 		<div class="place-details">
 			<p class="place-type">
-				{data.places.find((p) => p.google_place_id === focusedLocation?.google_place_id)?.type ??
+				{data.places.find((p) => p.google_place_id === focusedPlace?.google_place_id)?.type ??
 					'Place'}
 			</p>
-			<p class="place-address">{focusedLocation.formatted_address}</p>
+			<p class="place-address">{focusedPlace.formatted_address}</p>
 		</div>
 	{/if}
 </SideDrawer>
 <div class="controls">
-	<SearchBar placeholder="Search for something yummy" onsearchresultclick={handleLocationClick} />
+	<SearchBar
+		placeholder="Search for something yummy"
+		bind:query={searchQuery}
+		onsearchresultclick={handleSearchResultClick}
+	/>
 	<FilterChips
 		filters={CATEGORIES}
 		{activeFilter}

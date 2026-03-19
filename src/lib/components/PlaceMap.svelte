@@ -4,35 +4,40 @@
 	import type { Place } from '$lib/dao/places/types';
 	import PlaceMarker from './PlaceMarker.svelte';
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
-	import type { CategoryConfig, FocusedLocation } from './types';
+	import type { CategoryConfig } from './types';
 	import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_ID } from './map-constants';
-	import { isPlace } from '$lib/schemas/search';
 
 	let {
 		categories,
 		onplaceclick,
 		places,
-		focusedLocation,
 		onmapclick,
 		onaddtolist
 	}: {
 		categories: Record<Place['type'], CategoryConfig>;
 		places: Place[];
 		onplaceclick: (place: Place) => void;
-		focusedLocation?: FocusedLocation | null;
 		onmapclick?: () => void;
 		onaddtolist?: (placeId: string) => void;
 	} = $props();
 
 	let mapEl: HTMLDivElement;
 	let map: google.maps.Map | null = $state(null);
-	let selectedMarker: google.maps.marker.AdvancedMarkerElement | null = null;
-	let infoWindow: google.maps.InfoWindow | null = null;
+	let currentInfoWindow: google.maps.InfoWindow | null = null;
+
+	function openInfoWindow(iw: google.maps.InfoWindow) {
+		currentInfoWindow?.close();
+		currentInfoWindow = iw;
+		iw.open(map!);
+	}
 
 	onMount(async () => {
 		setOptions({ key: PUBLIC_GOOGLE_MAPS_API_KEY });
 
-		const { Map } = await importLibrary('maps');
+		const [{ Map, InfoWindow }, { Place }] = await Promise.all([
+			importLibrary('maps') as Promise<google.maps.MapsLibrary>,
+			importLibrary('places') as Promise<google.maps.PlacesLibrary>
+		]);
 
 		map = new Map(mapEl, {
 			center: DEFAULT_MAP_CENTER,
@@ -43,54 +48,43 @@
 			fullscreenControl: false
 		});
 
-		map.addListener('click', () => onmapclick?.());
-	});
+		map.addListener('click', async (event: google.maps.MapMouseEvent & { placeId?: string }) => {
+			if (!event.placeId) {
+				currentInfoWindow?.close();
+				currentInfoWindow = null;
+				onmapclick?.();
+				return;
+			}
 
-	$effect(() => {
-		infoWindow?.close();
-		if (selectedMarker) {
-			selectedMarker.map = null;
-			selectedMarker = null;
-		}
-		if (focusedLocation && map) {
-			const handleInfoButtonClick = onaddtolist;
-			const pos = { lat: focusedLocation.lat, lng: focusedLocation.lng };
-			map.panTo(pos);
-			map.setZoom(15);
-			importLibrary('marker').then(({ AdvancedMarkerElement }: google.maps.MarkerLibrary) => {
-				const place = focusedLocation!;
-				selectedMarker = new AdvancedMarkerElement({
-					map,
-					position: { lat: place.lat, lng: place.lng },
-					title: place.name
-				});
+			event.stop();
 
-				const mapsUrl = `https://www.google.com/maps/place/?q=place_id:${place.google_place_id}`;
-				infoWindow = new google.maps.InfoWindow({
-					content: `<div style="font-family:'Google Sans',Roboto,Arial,sans-serif;max-width:220px">
-						<strong style="font-size:14px;color:#202124">${place.name}</strong>
-						${place.formatted_address ? `<p style="margin:8px 0 4px;font-size:13px;color:#70757a">${place.formatted_address}</p>` : ''}
-						<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer"
-							style="font-size:13px;color:#1a73e8;text-decoration:none">View on Google Maps</a>
-						<br/>
-						${
-							!isPlace(focusedLocation)
-								? `<button data-place-id="${place.google_place_id}"
-							style="margin-top:8px;padding:6px 12px;background:#1a73e8;color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer">
-							Add to list
-						</button>`
-								: ''
-						}
-					</div>`
-				});
-				infoWindow.addListener('domready', () => {
-					document
-						.querySelector<HTMLButtonElement>(`[data-place-id="${place.google_place_id}"]`)
-						?.addEventListener('click', () => handleInfoButtonClick?.(place.google_place_id));
-				});
-				infoWindow.open({ map, anchor: selectedMarker });
+			const place = new Place({ id: event.placeId });
+			await place.fetchFields({
+				fields: ['displayName', 'formattedAddress', 'rating', 'userRatingCount']
 			});
-		}
+
+			const iw = new InfoWindow({
+				position: event.latLng,
+				content: `
+				<div style="max-width: 200px">
+					<strong>${place.displayName}</strong><br />
+					${place.formattedAddress ?? ''}<br />
+					<button
+						data-place-id="${place.id}"
+						style="margin-top: 8px; padding: 6px 12px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer"
+					>
+						Add to list
+					</button>
+				</div>
+			`
+			});
+			iw.addListener('domready', () => {
+				document
+					.querySelector<HTMLButtonElement>(`[data-place-id="${place.id}"]`)
+					?.addEventListener('click', () => onaddtolist?.(place.id));
+			});
+			openInfoWindow(iw);
+		});
 	});
 </script>
 

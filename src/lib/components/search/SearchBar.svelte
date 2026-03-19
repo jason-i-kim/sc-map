@@ -8,20 +8,22 @@
 
 	let {
 		placeholder = 'Search Google Maps',
+		query = $bindable(''),
 		onchange,
 		onsearchresultclick
 	}: {
 		placeholder?: string;
+		query?: string;
 		onchange?: (query: string) => void;
 		onsearchresultclick?: (searchResult: SearchResult) => void;
 	} = $props();
 
 	let focused = $state(false);
-	let query = $state('');
-	let open = $derived(focused);
 
 	const searchQuery = createQuery(() => searchPlacesOptions(query));
 	const suggestions = $derived(searchQuery.data ?? []);
+
+	let open = $derived(focused && suggestions.length > 0);
 
 	function handleInput(e: Event) {
 		query = (e.target as HTMLInputElement).value;
