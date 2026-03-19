@@ -54,7 +54,9 @@
 		}
 		if (focusedLocation && map) {
 			const handleInfoButtonClick = onaddtolist;
-			map.moveCamera({ center: { lat: focusedLocation.lat, lng: focusedLocation.lng }, zoom: 15 });
+			const pos = { lat: focusedLocation.lat, lng: focusedLocation.lng };
+			map.panTo(pos);
+			map.setZoom(15);
 			importLibrary('marker').then(({ AdvancedMarkerElement }: google.maps.MarkerLibrary) => {
 				const place = focusedLocation!;
 				selectedMarker = new AdvancedMarkerElement({
