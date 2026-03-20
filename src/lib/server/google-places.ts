@@ -38,6 +38,52 @@ interface NewPlacesResponse {
 	places: NewPlaceResult[];
 }
 
+export interface PlaceDetails {
+	rating: number | null;
+	userRatingCount: number | null;
+	openNow: boolean | null;
+	weekdayDescriptions: string[] | null;
+	priceLevel: string | null;
+	nationalPhoneNumber: string | null;
+	websiteUri: string | null;
+}
+
+export async function getPlaceDetails(placeId: string): Promise<PlaceDetails> {
+	const apiKey = process.env.PUBLIC_GOOGLE_MAPS_API_KEY;
+	const empty: PlaceDetails = {
+		rating: null,
+		userRatingCount: null,
+		openNow: null,
+		weekdayDescriptions: null,
+		priceLevel: null,
+		nationalPhoneNumber: null,
+		websiteUri: null
+	};
+
+	if (!apiKey) return empty;
+
+	const response = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+		headers: {
+			'X-Goog-Api-Key': apiKey,
+			'X-Goog-FieldMask':
+				'rating,userRatingCount,regularOpeningHours,currentOpeningHours,priceLevel,nationalPhoneNumber,websiteUri'
+		}
+	});
+
+	if (!response.ok) return empty;
+
+	const p = await response.json();
+	return {
+		rating: p.rating ?? null,
+		userRatingCount: p.userRatingCount ?? null,
+		openNow: p.currentOpeningHours?.openNow ?? null,
+		weekdayDescriptions: p.regularOpeningHours?.weekdayDescriptions ?? null,
+		priceLevel: p.priceLevel ?? null,
+		nationalPhoneNumber: p.nationalPhoneNumber ?? null,
+		websiteUri: p.websiteUri ?? null
+	};
+}
+
 export async function getGooglePlaceById(placeId: string): Promise<GooglePlaceResult | null> {
 	const apiKey = process.env.PUBLIC_GOOGLE_MAPS_API_KEY;
 	if (!apiKey) return null;
