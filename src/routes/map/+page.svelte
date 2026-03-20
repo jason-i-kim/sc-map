@@ -45,7 +45,7 @@
 	bind:open={drawerOpen}
 	onclose={() => (selectedLocation = null)}
 	class="place-drawer"
-	variant="standard"
+	variant="modal"
 >
 	{#snippet header()}
 		<span>{selectedLocation?.name ?? ''}</span>
