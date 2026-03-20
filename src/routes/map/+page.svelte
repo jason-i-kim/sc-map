@@ -32,13 +32,21 @@
 	// function handleAddToList() {}
 </script>
 
-<PlaceMap
-	categories={CATEGORIES}
-	places={filteredPlaces}
-	bind:selectedLocation
-	// onaddtolist={handleAddToList}
-/>
-<Drawer bind:open={drawerOpen} onclose={() => (selectedLocation = null)} class="place-drawer">
+<div class="map-root">
+	<PlaceMap
+		categories={CATEGORIES}
+		places={filteredPlaces}
+		bind:selectedLocation
+		// onaddtolist={handleAddToList}
+	/>
+</div>
+
+<Drawer
+	bind:open={drawerOpen}
+	onclose={() => (selectedLocation = null)}
+	class="place-drawer"
+	variant="standard"
+>
 	{#snippet header()}
 		<span>{selectedLocation?.name ?? ''}</span>
 	{/snippet}
@@ -102,5 +110,11 @@
 		color: var(--color-on-surface-variant);
 		margin: 0;
 		line-height: 1.5;
+	}
+
+	.map-root {
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
 	}
 </style>

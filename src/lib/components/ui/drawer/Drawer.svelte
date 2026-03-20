@@ -174,7 +174,6 @@
 		flex-direction: column;
 
 		background-color: var(--md-sys-color-surface-container-low);
-		border-radius: 0 var(--md-comp-drawer-border-radius) var(--md-comp-drawer-border-radius) 0;
 		box-shadow: var(--md-sys-elevation-1);
 
 		overflow: hidden;
@@ -198,9 +197,8 @@
 		bottom: auto;
 		transform: none;
 		box-shadow: none;
-		border-radius: var(--md-sys-shape-corner-extra-large);
 		flex-shrink: 0;
-		height: 100%;
+		height: 100vh;
 	}
 
 	/* ---- Header ---- */
