@@ -32,14 +32,7 @@ export const POST: RequestHandler = async ({ params, cookies }) => {
 			submitted_by: userId
 		});
 
-		const serialized = {
-			...place,
-			id: place.id.toString(),
-			submitted_by: place.submitted_by.toString(),
-			created_at: place.created_at.toISOString()
-		};
-
-		return jsonResponse(serialized, 201);
+		return jsonResponse(place, 201);
 	} catch (e) {
 		if (e instanceof DuplicateGooglePlaceIdError) return errorResponse('Place already exists', 409);
 		if (e instanceof InvalidPlaceTypeError) return errorResponse('Invalid place type', 422);

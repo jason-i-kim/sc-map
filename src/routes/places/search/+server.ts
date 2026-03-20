@@ -2,12 +2,13 @@ import { PlacesDao } from '$lib/dao/places';
 import { sql } from '$lib/db';
 import { searchGooglePlaces, inferPlaceType } from '$lib/server/google-places';
 import { type SearchResult } from '$lib/schemas/search';
+import { jsonResponse } from '$lib/server/response';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const q = url.searchParams.get('q');
 	if (!q) {
-		return new Response(JSON.stringify([]), { headers: { 'Content-Type': 'application/json' } });
+		return jsonResponse([]);
 	}
 
 	const placesDao = new PlacesDao(sql);
@@ -40,8 +41,5 @@ export const GET: RequestHandler = async ({ url }) => {
 		}))
 	];
 
-	return new Response(
-		JSON.stringify(searchResults, (_, v) => (typeof v === 'bigint' ? v.toString() : v)),
-		{ headers: { 'Content-Type': 'application/json' } }
-	);
+	return jsonResponse(searchResults);
 };
