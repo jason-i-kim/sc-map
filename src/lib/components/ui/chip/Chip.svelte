@@ -146,7 +146,7 @@
 		padding: 0 var(--md-comp-chip-padding-h);
 		border-radius: var(--md-comp-chip-border-radius);
 		border: 1px solid var(--md-sys-color-outline);
-		background-color: transparent;
+		background-color: var(--md-sys-color-surface);
 		cursor: pointer;
 		user-select: none;
 		overflow: hidden;
