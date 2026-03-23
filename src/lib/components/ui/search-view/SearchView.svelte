@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type { Snippet } from 'svelte';
 
 	// ---------------------------------------------------------------------------
@@ -79,7 +80,7 @@
 	// Internal state
 	// ---------------------------------------------------------------------------
 
-	let open = $state(initialOpen);
+	let open = $state(untrack(() => initialOpen));
 	let closing = $state(false); // true during the exit animation
 
 	// Refs
@@ -229,11 +230,9 @@
   Focus is auto-moved to the header input on open, and restored on close.
 -->
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class={rootClasses} bind:this={rootEl} onkeydown={handleKeydown}>
-	<!-- Bar slot — clicking anywhere here opens the view -->
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<div class="md-search-view__bar" onclick={openView} role="search">
+<div class={rootClasses} bind:this={rootEl}>
+	<!-- Bar slot — focusing any interactive child (e.g. the input) opens the view -->
+	<div class="md-search-view__bar" onfocusin={openView}>
 		{@render children({ open, value })}
 	</div>
 
@@ -243,6 +242,8 @@
 		role="dialog"
 		aria-label={placeholder ?? 'Search'}
 		aria-modal="false"
+		tabindex="-1"
+		onkeydown={handleKeydown}
 	>
 		<!-- Header -->
 		<div class="md-search-view__header">

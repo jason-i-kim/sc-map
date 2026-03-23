@@ -189,7 +189,7 @@
 		{#if trailing}<div class="md-list-item__trailing">{@render trailing()}</div>{/if}
 	</button>
 {:else}
-	<li class={classes} aria-disabled={disabled ? 'true' : undefined} {...restProps}>
+	<li class={classes} {...restProps}>
 		<span class="md-list-item__state-layer" aria-hidden="true"></span>
 		{#if leading}<div class="md-list-item__leading">{@render leading()}</div>{/if}
 		<div class="md-list-item__content">
