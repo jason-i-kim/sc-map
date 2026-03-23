@@ -89,7 +89,9 @@
 		[
 			'md-side-sheet',
 			variant === 'modal' && 'md-side-sheet--modal',
-			variant === 'standard' && 'md-side-sheet--standard'
+			variant === 'modal' && 'md-elevation-1',
+			variant === 'standard' && 'md-side-sheet--standard',
+			variant === 'standard' && 'md-elevation-0'
 		]
 			.filter(Boolean)
 			.join(' ')

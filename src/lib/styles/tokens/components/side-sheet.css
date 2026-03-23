@@ -57,10 +57,6 @@
 	--md-comp-side-sheet-content-padding-block: 16px;
 	--md-comp-side-sheet-content-color: var(--md-sys-color-on-surface-variant);
 
-	/* --- Elevation --- */
-	--md-comp-side-sheet-modal-shadow: var(--md-sys-elevation-shadow-level1);
-	--md-comp-side-sheet-standard-shadow: var(--md-sys-elevation-shadow-level0);
-
 	/* --- Scrim (modal only) --- */
 	--md-comp-side-sheet-scrim-color: var(--md-sys-color-scrim);
 	--md-comp-side-sheet-scrim-opacity: 0.32;

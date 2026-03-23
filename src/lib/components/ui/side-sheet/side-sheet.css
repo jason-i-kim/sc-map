@@ -136,7 +136,6 @@
 	border-end-end-radius: var(--md-comp-side-sheet-shape-end-end);
 
 	/* Color */
-	background-color: var(--md-comp-side-sheet-container-color);
 	color: var(--md-comp-side-sheet-content-color);
 
 	/* Layout */
@@ -152,15 +151,8 @@
 	z-index: 1;
 }
 
-/* Standard: co-planar, no shadow */
-.md-side-sheet--standard {
-	box-shadow: var(--md-comp-side-sheet-standard-shadow);
-}
-
-/* Modal: elevated above content */
-.md-side-sheet--modal {
-	box-shadow: var(--md-comp-side-sheet-modal-shadow);
-}
+/* Standard: co-planar, no shadow — elevation handled by .md-elevation-0 */
+/* Modal: elevated above content  — elevation handled by .md-elevation-1 */
 
 /* --- Open state --- */
 .md-side-sheet-root--open .md-side-sheet,
