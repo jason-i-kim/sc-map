@@ -26,3 +26,6 @@
 
 /* Component styles — each self-contained via its own internal @import */
 @import '../components/ui/button/button.css';
+@import '../components/ui/search-bar/search-bar.css';
+@import '../components/ui/search-view/search-view.css';
+@import '../components/ui/list/list.css';
