@@ -1,5 +1,6 @@
 import { mutationOptions, queryOptions, type QueryClient } from '@tanstack/svelte-query';
 import { PlaceSchema, type Place } from '$lib/schemas/place';
+import { VisitWithUserSchema } from '$lib/dao/visits/types';
 
 export function submitPlaceOptions(queryClient: QueryClient) {
 	return mutationOptions({
@@ -24,6 +25,17 @@ export function submitPlaceOptions(queryClient: QueryClient) {
 			return res.json();
 		},
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['places'] })
+	});
+}
+
+export function placeVisitsOptions(placeId: bigint) {
+	return queryOptions({
+		queryKey: ['places', String(placeId), 'visits'],
+		queryFn: async () => {
+			const res = await fetch(`/places/${placeId}/visits`);
+			if (!res.ok) throw new Error(await res.text());
+			return VisitWithUserSchema.array().parse(await res.json());
+		}
 	});
 }
 

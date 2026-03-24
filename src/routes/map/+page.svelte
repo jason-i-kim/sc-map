@@ -7,9 +7,10 @@
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
 	import AddPlaceDialog from '$lib/components/AddPlaceDialog.svelte';
 	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import { searchPlacesOptions, submitPlaceOptions } from '$lib/queries';
+	import { searchPlacesOptions, submitPlaceOptions, placeVisitsOptions } from '$lib/queries';
 	import { invalidateAll } from '$app/navigation';
 	import SearchResults from '$lib/components/SearchResults.svelte';
+	import PlaceSheet from '$lib/components/PlaceSheet.svelte';
 
 	let { data } = $props();
 
@@ -31,6 +32,11 @@
 	});
 
 	const searchQuery = createQuery(() => searchPlacesOptions(debouncedSearch));
+
+	const visitsQuery = createQuery(() => ({
+		...placeVisitsOptions(selectedPlace && isSavedPlace(selectedPlace) ? selectedPlace.id : 0n),
+		enabled: selectedPlace !== null && isSavedPlace(selectedPlace)
+	}));
 
 	const queryClient = useQueryClient();
 	const submitMutation = createMutation(() => submitPlaceOptions(queryClient));
@@ -99,6 +105,14 @@
 		googlePlaceId={selectedPlace.google_place_id}
 		onadd={handleSubmit}
 	></AddPlaceDialog>
+{:else if selectedPlace && isSavedPlace(selectedPlace)}
+	<PlaceSheet
+		open={true}
+		placeName={selectedPlace.name}
+		visits={visitsQuery.data ?? []}
+		onclose={() => (selectedPlace = null)}
+		onaddtolist={() => (dialogOpen = true)}
+	/>
 {/if}
 
 <style>
