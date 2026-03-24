@@ -20,7 +20,12 @@ const CreatePlacePayloadSchema = z.object({
 	visit: z.object({
 		rating: z.coerce.number().min(1).max(5),
 		review: z.string().min(1),
-		photos: z.file().array()
+		photos: z
+			.file()
+			.refine((f) => f.size < 5_000_000, 'Max 5MB per photo')
+			.refine((f) => f.type.startsWith('image/'), 'Must be an image')
+			.array()
+			.max(10, 'Maximum 10 photos')
 	})
 });
 
