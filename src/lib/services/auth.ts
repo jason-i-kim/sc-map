@@ -11,7 +11,7 @@ export async function upsertDiscordUser(
 	guildMember: GuildMember | null
 ): Promise<User> {
 	const is_current_server_member = guildMember !== null;
-	const has_lifetime_access = guildMember?.roles.includes(DISCORD_GOATED_ROLE_ID) ?? false;
+	const has_lifetime_access = guildMember?.roles.includes(DISCORD_GOATED_ROLE_ID!) ?? false;
 	const insert = discordUserToInsert(discordUser, is_current_server_member, has_lifetime_access);
 
 	return sql.begin(async (tx) => {

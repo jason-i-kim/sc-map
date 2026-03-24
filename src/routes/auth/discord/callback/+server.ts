@@ -2,7 +2,10 @@ import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { PUBLIC_DISCORD_CLIENT_ID } from '$env/static/public';
 import { env } from '$env/dynamic/private';
-const { DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI, DISCORD_GUILD_ID } = env;
+const { DISCORD_CLIENT_SECRET, DISCORD_REDIRECT_URI, DISCORD_GUILD_ID } = env as Record<
+	string,
+	string
+>;
 import {
 	exchangeCode,
 	getCurrentUser,
