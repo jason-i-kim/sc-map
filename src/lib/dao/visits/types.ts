@@ -11,7 +11,13 @@ export const VisitSchema = z.object({
 	updated_at: z.date()
 });
 
-export const VisitInsertSchema = VisitSchema.omit({ id: true, created_at: true, updated_at: true });
+export const VisitInsertSchema = VisitSchema.omit({
+	id: true,
+	created_at: true,
+	updated_at: true
+}).extend({
+	visited_at: z.iso.date()
+});
 
 export const VisitUpdateSchema = VisitSchema.omit({
 	id: true,

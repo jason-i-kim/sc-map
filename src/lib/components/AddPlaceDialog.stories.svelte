@@ -14,11 +14,19 @@
 <!-- Default: open with a place name -->
 
 <Story name="Default">
-	<AddPlaceDialog open={true} placeName="Franklin Barbecue" />
+	<AddPlaceDialog
+		open={true}
+		placeName="Franklin Barbecue"
+		googlePlaceId="ChIJ24EDAYllToYR34yWOv_et-A"
+	/>
 </Story>
 
 <!-- Long place name -->
 
 <Story name="Long Place Name">
-	<AddPlaceDialog open={true} placeName="The Salt Lick BBQ – Driftwood, Texas" />
+	<AddPlaceDialog
+		open={true}
+		placeName="The Salt Lick BBQ – Driftwood, Texas"
+		googlePlaceId="ChIJN1t_tDeuEmsRUsoyG83frY4"
+	/>
 </Story>

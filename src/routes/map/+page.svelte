@@ -8,6 +8,7 @@
 	import { type Place } from '$lib/schemas/search';
 	import { setSelectedPlaceContext } from '$lib/contexts/selected-location.svelte.js';
 	import CloseIcon from '$lib/icons/CloseIcon.svelte';
+	import AddPlaceDialog from '$lib/components/AddPlaceDialog.svelte';
 
 	let ctx = setSelectedPlaceContext();
 
@@ -15,6 +16,7 @@
 
 	let searchValue = $state('');
 	let searchResults = $state<Place[]>([]);
+	let dialogOpen = $state(false);
 
 	$effect(() => {
 		const q = searchValue;
@@ -30,10 +32,34 @@
 		}, 500);
 		return () => clearTimeout(timer);
 	});
+
+	const handleSubmit = async (data: {
+		rating: number;
+		review: string;
+		photos: File[];
+		googlePlaceId: Place['google_place_id'];
+	}) => {
+		const formData = new FormData();
+		formData.append('googlePlaceId', data.googlePlaceId);
+		formData.append('rating', String(data.rating));
+		formData.append('review', data.review);
+		for (const photo of data.photos) {
+			formData.append('photos', photo);
+		}
+
+		const res = await fetch(`/places/${data.googlePlaceId}`, {
+			method: 'POST',
+			body: formData
+		});
+
+		if (res.ok) {
+			dialogOpen = false;
+		}
+	};
 </script>
 
 <div class="map-root">
-	<PlaceMap categories={CATEGORIES} places={data.places} />
+	<PlaceMap categories={CATEGORIES} places={data.places} onaddtolist={() => (dialogOpen = true)} />
 </div>
 
 <div class="controls">
@@ -84,6 +110,15 @@
 		{/snippet}
 	</SearchView>
 </div>
+
+{#if ctx.selectedPlace}
+	<AddPlaceDialog
+		open={dialogOpen}
+		placeName={ctx.selectedPlace.name}
+		googlePlaceId={ctx.selectedPlace.google_place_id}
+		onadd={handleSubmit}
+	></AddPlaceDialog>
+{/if}
 
 <style>
 	.map-root {

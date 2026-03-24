@@ -3,20 +3,22 @@
 	import Button from './ui/button/Button.svelte';
 	import TextField from './ui/text-field/TextField.svelte';
 	import StarRating from './ui/star-rating/StarRating.svelte';
+	import type { Place } from '$lib/schemas/search';
 
 	interface Props {
 		open?: boolean;
-		placeName?: string;
+		placeName: string;
+		googlePlaceId: string;
 		onclose?: () => void;
-		onpost?: (data: { rating: number; review: string; photos: File[] }) => void;
+		onadd?: (data: {
+			rating: number;
+			review: string;
+			photos: File[];
+			googlePlaceId: Place['google_place_id'];
+		}) => void;
 	}
 
-	let {
-		open = $bindable(false),
-		placeName = 'Franklin Barbecue',
-		onclose,
-		onpost
-	}: Props = $props();
+	let { open = $bindable(false), placeName, googlePlaceId, onclose, onadd }: Props = $props();
 
 	let rating = $state(0);
 	let review = $state('');
@@ -30,7 +32,7 @@
 	}
 
 	function handlePost() {
-		onpost?.({ rating, review, photos });
+		onadd?.({ rating, review, photos, googlePlaceId });
 		handleClose();
 	}
 
