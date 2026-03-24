@@ -14,6 +14,8 @@
 
 	let { data } = $props();
 
+	const SEARCH_PLACEHOLDER = 'Search places';
+
 	let selectedPlace = $state<Place | null>(null);
 	let searchValue = $state('');
 	let debouncedSearch = $state('');
@@ -31,11 +33,24 @@
 		return () => clearTimeout(timer);
 	});
 
+	$effect(() => {
+		if (selectedPlace === null) {
+			return;
+		}
+
+		searchValue = selectedPlace.name;
+	});
+
+	const savedPlace = $derived(selectedPlace && isSavedPlace(selectedPlace) ? selectedPlace : null);
+	const googlePlace = $derived(
+		selectedPlace && !isSavedPlace(selectedPlace) ? selectedPlace : null
+	);
+
 	const searchQuery = createQuery(() => searchPlacesOptions(debouncedSearch));
 
 	const visitsQuery = createQuery(() => ({
-		...placeVisitsOptions(selectedPlace && isSavedPlace(selectedPlace) ? selectedPlace.id : 0n),
-		enabled: selectedPlace !== null && isSavedPlace(selectedPlace)
+		...placeVisitsOptions(savedPlace?.id ?? 0n),
+		enabled: savedPlace !== null
 	}));
 
 	const queryClient = useQueryClient();
@@ -59,12 +74,12 @@
 </div>
 
 <div class="controls">
-	<SearchView placeholder="Search places" bind:value={searchValue}>
+	<SearchView placeholder={SEARCH_PLACEHOLDER} bind:value={searchValue}>
 		{#snippet children({ open, value })}
 			<SearchBar
 				{value}
-				placeholder="Search places"
-				aria-label="Search places"
+				placeholder={SEARCH_PLACEHOLDER}
+				aria-label={SEARCH_PLACEHOLDER}
 				aria-expanded={open}
 			>
 				{#snippet trailingIcons()}
@@ -98,17 +113,17 @@
 	</SearchView>
 </div>
 
-{#if selectedPlace && !isSavedPlace(selectedPlace)}
+{#if googlePlace}
 	<AddPlaceDialog
 		open={dialogOpen}
-		placeName={selectedPlace.name}
-		googlePlaceId={selectedPlace.google_place_id}
+		placeName={googlePlace.name}
+		googlePlaceId={googlePlace.google_place_id}
 		onadd={handleSubmit}
 	></AddPlaceDialog>
-{:else if selectedPlace && isSavedPlace(selectedPlace)}
+{:else if savedPlace}
 	<PlaceSheet
 		open={true}
-		placeName={selectedPlace.name}
+		placeName={savedPlace.name}
 		visits={visitsQuery.data ?? []}
 		onclose={() => (selectedPlace = null)}
 		onaddtolist={() => (dialogOpen = true)}
