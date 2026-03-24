@@ -25,13 +25,27 @@
 	let photos = $state<File[]>([]);
 	let photoUrls = $state<string[]>([]);
 	let fileInput = $state<HTMLInputElement | null>(null);
+	let submitted = $state(false);
+
+	const MAX_REVIEW_LENGTH = 2000;
+
+	const ratingError = $derived(submitted && rating === 0 ? 'Please select a rating' : '');
+	const reviewError = $derived(
+		review.length > MAX_REVIEW_LENGTH
+			? `Review must be ${MAX_REVIEW_LENGTH} characters or fewer`
+			: ''
+	);
+	const isValid = $derived(rating > 0 && review.length <= MAX_REVIEW_LENGTH);
 
 	function handleClose() {
+		submitted = false;
 		onclose?.();
 		open = false;
 	}
 
 	function handlePost() {
+		submitted = true;
+		if (!isValid) return;
 		onadd?.({ rating, review, photos, googlePlaceId });
 		handleClose();
 	}
@@ -55,7 +69,12 @@
 <Dialog bind:open {onclose} class="add-visit-dialog">
 	{#snippet headline()}{placeName}{/snippet}
 	<div class="dialog-body">
-		<StarRating bind:value={rating} />
+		<div class="rating-field">
+			<StarRating bind:value={rating} />
+			{#if ratingError}
+				<p class="rating-error" role="alert">{ratingError}</p>
+			{/if}
+		</div>
 
 		<!-- Review textarea -->
 		<TextField
@@ -64,6 +83,8 @@
 			placeholder="Tell others about your experience"
 			rows={6}
 			bind:value={review}
+			errorText={reviewError}
+			maxlength={MAX_REVIEW_LENGTH}
 			class="review-field"
 		/>
 
@@ -113,7 +134,7 @@
 
 	{#snippet actions()}
 		<Button variant="text" onclick={handleClose}>Cancel</Button>
-		<Button variant="text" onclick={handlePost}>Post</Button>
+		<Button variant="text" onclick={handlePost} disabled={submitted && !isValid}>Post</Button>
 	{/snippet}
 </Dialog>
 
@@ -191,5 +212,18 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+
+	.rating-field {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.rating-error {
+		margin: 0;
+		font-size: 0.75rem;
+		color: var(--md-sys-color-error, #b3261e);
 	}
 </style>
