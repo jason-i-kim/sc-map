@@ -17,6 +17,7 @@
 	let dialogOpen = $state(false);
 	let sheetOpen = $state(false);
 	let searchQuery = $state('');
+	let showInfoWindow = $state<((place: Place) => void) | null>(null);
 
 	const searchIconPath =
 		'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z';
@@ -26,6 +27,8 @@
 		close();
 		if (isSavedPlace(place)) {
 			sheetOpen = true;
+		} else {
+			showInfoWindow?.(place);
 		}
 	}
 </script>
@@ -35,6 +38,7 @@
 		savedPlaces={data.savedPlaces}
 		categories={CATEGORIES}
 		{selectedPlace}
+		bind:showInfoWindow
 		onsaveplace={() => {
 			dialogOpen = true;
 		}}
@@ -51,7 +55,7 @@
 </div>
 
 <div class="controls">
-	<SearchView bind:value={searchQuery} placeholder="Search places">
+	<SearchView bind:value={searchQuery} placeholder="Search places" class="search-view">
 		{#snippet children({ open, value })}
 			<SearchBar
 				{value}
@@ -106,12 +110,18 @@
 	}
 
 	.controls {
-		position: fixed;
-		display: flex;
-		flex-direction: row;
-		top: 10px;
-		left: 10px;
-		z-index: 300;
-		gap: var(--space-2);
+		position: absolute;
+		width: 100vw;
+		height: 100vh;
+		padding-left: 1rem;
+		padding-right: 1rem;
+		padding-top: 2rem;
+		box-sizing: border-box;
+		pointer-events: none;
+	}
+
+	.controls :global(.search-view) {
+		padding-top: 2rem;
+		pointer-events: auto;
 	}
 </style>

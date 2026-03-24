@@ -13,13 +13,15 @@
 		savedPlaces,
 		selectedPlace,
 		onsaveplace,
-		onplacechange
+		onplacechange,
+		showInfoWindow = $bindable<((place: Place) => void) | null>(null)
 	}: {
 		categories: typeof CATEGORIES;
 		savedPlaces: SavedPlace[];
 		selectedPlace: Place | null;
 		onsaveplace: (placeId: string) => void;
 		onplacechange: (place: Place | null) => void;
+		showInfoWindow?: ((place: Place) => void) | null;
 	} = $props();
 
 	let map: google.maps.Map | null = $state(null);
@@ -54,6 +56,47 @@
 	const handleSavePlace = (googlePlaceId: string) => {
 		clearCurrentInfoWindow();
 		onsaveplace(googlePlaceId);
+	};
+
+	const openInfoWindowForPlace = (place: Place) => {
+		if (InfoWindowClass === null || AdvancedMarkerClass === null || map === null) {
+			return;
+		}
+
+		currentMarker = new AdvancedMarkerClass({
+			position: { lat: place.lat, lng: place.lng },
+			map,
+			title: place.name
+		});
+
+		currentInfoWindow = new InfoWindowClass({
+			position: { lat: place.lat, lng: place.lng },
+			content: `
+				<div style="max-width: 200px; color: #000">
+					<strong>${place.name}</strong><br />
+					${place.formatted_address}<br />
+					<button
+						data-place-id="${place.google_place_id}"
+						style="margin-top: 8px; padding: 6px 12px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer"
+					>
+						Save place
+					</button>
+				</div>
+			`
+		});
+
+		currentInfoWindow.addListener('domready', () => {
+			document
+				.querySelector<HTMLButtonElement>(`[data-place-id="${place.google_place_id}"]`)
+				?.addEventListener('click', () => handleSavePlace(place.google_place_id));
+		});
+
+		currentInfoWindow.addListener('closeclick', () => {
+			clearCurrentMarker();
+			clearCurrentInfoWindow();
+		});
+
+		currentInfoWindow.open({ map, anchor: currentMarker });
 	};
 
 	const handleMapClick = async (event: google.maps.MapMouseEvent & { placeId?: string }) => {
@@ -91,52 +134,19 @@
 			return;
 		}
 
-		// Add a marker to provide feedback to the user that their click was registered.
-		currentMarker = new AdvancedMarkerClass({
-			position: { lat: latLng.lat(), lng: latLng.lng() },
-			map,
-			title: place.displayName
-		});
-
-		// Signal to the parent that the place has changed.
-		onplacechange({
+		const unsavedPlace = {
 			name: place.displayName ?? '',
 			lat: latLng.lat(),
 			lng: latLng.lng(),
 			formatted_address: place.formattedAddress ?? '',
 			google_place_id: place.id
-		});
+		};
 
-		// We're dealing with a Google Place, not a saved place. We want to show the user
-		// an info window so that they could save the place if desired.
-		currentInfoWindow = new InfoWindowClass({
-			position: { lat: latLng.lat(), lng: latLng.lng() },
-			content: `
-				<div style="max-width: 200px; color: #000">
-					<strong>${place.displayName}</strong><br />
-					${place.formattedAddress}<br />
-					<button
-						data-place-id="${place.id}"
-						style="margin-top: 8px; padding: 6px 12px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer"
-					>
-						Save place
-					</button>
-				</div>
-			`
-		});
-		// Wait for the DOM to be ready inside of the InfoWindow, then add the `onsaveplace` click handler
-		currentInfoWindow.addListener('domready', () => {
-			document
-				.querySelector<HTMLButtonElement>(`[data-place-id="${place.id}"]`)
-				?.addEventListener('click', () => handleSavePlace(place.id));
-		});
+		// Signal to the parent that the place has changed.
+		onplacechange(unsavedPlace);
 
-		// Reset state if the user requests the window to close
-		currentInfoWindow.addListener('closeclick', () => {
-			clearCurrentMarker();
-		});
-
-		currentInfoWindow.open({ map, anchor: currentMarker });
+		// Show an InfoWindow so the user can save the place if desired.
+		openInfoWindowForPlace(unsavedPlace);
 	};
 
 	$effect(() => {
@@ -160,6 +170,7 @@
 		InfoWindowClass = InfoWindow;
 		AdvancedMarkerClass = AdvancedMarkerElement;
 		PlaceClass = Place;
+		showInfoWindow = openInfoWindowForPlace;
 
 		map = new Map(mapEl, {
 			center: DEFAULT_MAP_CENTER,
