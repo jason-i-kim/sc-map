@@ -1,4 +1,4 @@
-import { SavedPlaceSchema, type SavedPlace } from '$lib/server/dao/saved-places/types';
+import { SavedPlaceSchema, type SavedPlace } from '$lib/schemas/saved-place';
 import { z } from 'zod';
 
 export const BasePlaceSchema = SavedPlaceSchema.omit({

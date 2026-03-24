@@ -4,7 +4,7 @@ import {
 	type SavedPlace,
 	type SavedPlaceInsert,
 	type SavedPlaceUpdate
-} from './types';
+} from '$lib/schemas/saved-place';
 import { isPostgresError } from '$lib/db/utils';
 import { PG_ERRORS } from '$lib/db/errors';
 

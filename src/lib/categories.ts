@@ -1,5 +1,5 @@
 import type { CategoryConfig } from '$lib/components/types';
-import type { SavedPlace } from '$lib/server/dao/saved-places/types';
+import type { SavedPlace } from '$lib/schemas/saved-place';
 
 export const CATEGORIES: Record<SavedPlace['type'], CategoryConfig> = {
 	RESTAURANT: {

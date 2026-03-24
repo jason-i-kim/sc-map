@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { setOptions, importLibrary } from '@googlemaps/js-api-loader';
-	import type { SavedPlace } from '$lib/server/dao/saved-places/types';
+	import type { SavedPlace } from '$lib/schemas/saved-place';
 	import PlaceMarker from './PlaceMarker.svelte';
 	import { PUBLIC_GOOGLE_MAPS_API_KEY } from '$env/static/public';
 	import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM, MAP_ID } from './map-constants';
@@ -12,94 +12,48 @@
 		categories,
 		savedPlaces,
 		selectedPlace,
-		onaddtolist,
+		onsaveplace,
 		onplacechange
 	}: {
 		categories: typeof CATEGORIES;
 		savedPlaces: SavedPlace[];
 		selectedPlace: Place | null;
-		onaddtolist: (placeId: string) => void;
+		onsaveplace: (placeId: string) => void;
 		onplacechange: (place: Place | null) => void;
 	} = $props();
 
 	let map: google.maps.Map | null = $state(null);
-	let InfoWindowClass: typeof google.maps.InfoWindow | null = $state(null);
-	let AdvancedMarkerClass: typeof google.maps.marker.AdvancedMarkerElement | null = $state(null);
-	let currentInfoWindow: google.maps.InfoWindow | null = null;
-	let selectedPin: google.maps.marker.AdvancedMarkerElement | null = null;
+	let InfoWindowClass = $state<typeof google.maps.InfoWindow | null>(null);
+	let AdvancedMarkerClass = $state<typeof google.maps.marker.AdvancedMarkerElement | null>(null);
+	let PlaceClass = $state<typeof google.maps.places.Place | null>(null);
+
+	let currentInfoWindow = $state<google.maps.InfoWindow | null>(null);
+	let currentMarker = $state<google.maps.marker.AdvancedMarkerElement | null>(null);
+
+	const clearCurrentMarker = () => {
+		if (currentMarker === null) {
+			return;
+		}
+
+		currentMarker.map = null;
+		currentMarker = null;
+	};
+
+	const clearCurrentInfoWindow = () => {
+		if (currentInfoWindow === null) {
+			return;
+		}
+
+		currentInfoWindow.close();
+		currentInfoWindow = null;
+	};
+
+	const handleSavePlace = (googlePlaceId: string) => {
+		clearCurrentInfoWindow();
+		onsaveplace(googlePlaceId);
+	};
 
 	let mapEl: HTMLDivElement;
-
-	function clearSelectedPin() {
-		if (selectedPin) {
-			selectedPin.map = null;
-			selectedPin = null;
-		}
-	}
-
-	$effect(() => {
-		if (map === null || selectedPlace === null) {
-			return;
-		}
-
-		map.panTo(selectedPlace);
-		map.setZoom(15);
-	});
-
-	$effect(() => {
-		if (
-			map === null ||
-			InfoWindowClass === null ||
-			AdvancedMarkerClass === null ||
-			selectedPlace === null
-		) {
-			clearSelectedPin();
-			return;
-		}
-
-		const isSavedPlace = savedPlaces.some(
-			(p) => p.google_place_id === selectedPlace!.google_place_id
-		);
-		if (isSavedPlace) {
-			clearSelectedPin();
-			return;
-		}
-
-		clearSelectedPin();
-		selectedPin = new AdvancedMarkerClass({
-			position: { lat: selectedPlace.lat, lng: selectedPlace.lng },
-			map,
-			title: selectedPlace.name
-		});
-
-		const iw = new InfoWindowClass({
-			position: { lat: selectedPlace.lat, lng: selectedPlace.lng },
-			content: `
-				<div style="max-width: 200px; color: #000">
-					<strong>${selectedPlace.name}</strong><br />
-					${selectedPlace.formatted_address}<br />
-					<button
-						data-place-id="${selectedPlace.google_place_id}"
-						style="margin-top: 8px; padding: 6px 12px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer"
-					>
-						Add to list
-					</button>
-				</div>
-			`
-		});
-		iw.addListener('domready', () => {
-			document
-				.querySelector<HTMLButtonElement>(`[data-place-id="${selectedPlace!.google_place_id}"]`)
-				?.addEventListener('click', () => onaddtolist(selectedPlace!.google_place_id));
-		});
-		iw.addListener('closeclick', () => {
-			clearSelectedPin();
-			onplacechange?.(null);
-		});
-		currentInfoWindow?.close();
-		currentInfoWindow = iw;
-		iw.open({ map, anchor: selectedPin });
-	});
 
 	onMount(async () => {
 		setOptions({ key: PUBLIC_GOOGLE_MAPS_API_KEY });
@@ -112,6 +66,7 @@
 
 		InfoWindowClass = InfoWindow;
 		AdvancedMarkerClass = AdvancedMarkerElement;
+		PlaceClass = Place;
 
 		map = new Map(mapEl, {
 			center: DEFAULT_MAP_CENTER,
@@ -123,11 +78,16 @@
 		});
 
 		map.addListener('click', async (event: google.maps.MapMouseEvent & { placeId?: string }) => {
-			if (!event.placeId) {
-				currentInfoWindow?.close();
-				currentInfoWindow = null;
-				clearSelectedPin();
-				onplacechange?.(null);
+			if (event.placeId === selectedPlace?.google_place_id) {
+				return;
+			}
+			if (InfoWindowClass === null || AdvancedMarkerClass === null || PlaceClass === null) {
+				return;
+			}
+			clearCurrentMarker();
+			clearCurrentInfoWindow();
+			if (event.placeId === undefined) {
+				onplacechange(null);
 				return;
 			}
 
@@ -138,18 +98,61 @@
 				fields: ['displayName', 'formattedAddress', 'location']
 			});
 
-			onplacechange?.({
-				name: place.displayName ?? '',
-				lat: place.location?.lat() ?? 0,
-				lng: place.location?.lng() ?? 0,
-				formatted_address: place.formattedAddress ?? '',
-				google_place_id: event.placeId
+			const latLng = event.latLng;
+
+			if (latLng === null) {
+				return;
+			}
+
+			currentMarker = new AdvancedMarkerClass({
+				position: { lat: latLng.lat(), lng: latLng.lng() },
+				map,
+				title: place.displayName
 			});
+
+			onplacechange({
+				name: place.displayName ?? '',
+				lat: latLng.lat(),
+				lng: latLng.lng(),
+				formatted_address: place.formattedAddress ?? '',
+				google_place_id: place.id
+			});
+
+			// We're dealing with a Google Place, not a saved place. We want to show the user
+			// an info window so that they could save the place if desired.
+			currentInfoWindow = new InfoWindowClass({
+				position: { lat: latLng.lat(), lng: latLng.lng() },
+				content: `
+				<div style="max-width: 200px; color: #000">
+					<strong>${place.displayName}</strong><br />
+					${place.formattedAddress}<br />
+					<button
+						data-place-id="${place.id}"
+						style="margin-top: 8px; padding: 6px 12px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; font-size: 13px; cursor: pointer"
+					>
+						Save place
+					</button>
+				</div>
+			`
+			});
+			// Wait for the DOM to be ready inside of the InfoWindow, then add the `onsaveplace` click handler
+			currentInfoWindow.addListener('domready', () => {
+				document
+					.querySelector<HTMLButtonElement>(`[data-place-id="${place.id}"]`)
+					?.addEventListener('click', () => handleSavePlace(place.id));
+			});
+
+			// Reset state if the user requests the window to close
+			currentInfoWindow.addListener('closeclick', () => {
+				clearCurrentMarker();
+			});
+
+			currentInfoWindow.open({ map, anchor: currentMarker });
 		});
 	});
 </script>
 
-<div bind:this={mapEl} style="width: 100%; height: 100vh;"></div>
+<div bind:this={mapEl} style="width: 100%; height: 100%;"></div>
 
 {#if map}
 	{#each savedPlaces as place (place.id)}
@@ -157,7 +160,7 @@
 			{map}
 			{place}
 			visible={true}
-			onclick={(savedPlace) => onplacechange(savedPlace)}
+			onclick={onplacechange}
 			categoryConfig={categories[place.type]}
 		/>
 	{/each}
