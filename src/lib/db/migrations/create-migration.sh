@@ -11,8 +11,8 @@ TIMESTAMP="$(date +%s)000"
 BASE="${TIMESTAMP}_${TITLE}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "-- Apply migration" > "$DIR/${BASE}.up.sql"
-echo "-- Revert migration" > "$DIR/${BASE}.down.sql"
+printf '-- Apply migration\nBEGIN;\n\nCOMMIT;\n' > "$DIR/${BASE}.up.sql"
+printf '-- Revert migration\nBEGIN;\n\nCOMMIT;\n' > "$DIR/${BASE}.down.sql"
 
 echo "Created:"
 echo "  ${BASE}.up.sql"

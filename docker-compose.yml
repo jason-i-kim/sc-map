@@ -31,6 +31,9 @@ services:
         PUBLIC_GOOGLE_MAPS_API_KEY: ${PUBLIC_GOOGLE_MAPS_API_KEY}
         PUBLIC_DISCORD_CLIENT_ID: ${PUBLIC_DISCORD_CLIENT_ID}
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
 
     expose:
       - '3000'
