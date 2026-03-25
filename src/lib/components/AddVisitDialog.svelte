@@ -44,7 +44,7 @@
 	let review = $state('');
 	let visitDate = $state<string>('');
 	let photos = $state<File[]>([]);
-	let photoUrls = $state<string[]>([]);
+	// let photoUrls = $state<string[]>([]);
 	let fileInput = $state<HTMLInputElement | null>(null);
 	let submitted = $state(false);
 
@@ -72,20 +72,20 @@
 		handleClose();
 	}
 
-	function handleFileChange(event: Event) {
-		const input = event.currentTarget as HTMLInputElement;
-		const files = Array.from(input.files ?? []);
-		photos = [...photos, ...files];
-		for (const file of files) {
-			photoUrls = [...photoUrls, URL.createObjectURL(file)];
-		}
-	}
+	// function handleFileChange(event: Event) {
+	// 	const input = event.currentTarget as HTMLInputElement;
+	// 	const files = Array.from(input.files ?? []);
+	// 	photos = [...photos, ...files];
+	// 	for (const file of files) {
+	// 		photoUrls = [...photoUrls, URL.createObjectURL(file)];
+	// 	}
+	// }
 
-	function removePhoto(index: number) {
-		URL.revokeObjectURL(photoUrls[index]);
-		photos = photos.filter((_, i) => i !== index);
-		photoUrls = photoUrls.filter((_, i) => i !== index);
-	}
+	// function removePhoto(index: number) {
+	// 	URL.revokeObjectURL(photoUrls[index]);
+	// 	photos = photos.filter((_, i) => i !== index);
+	// 	photoUrls = photoUrls.filter((_, i) => i !== index);
+	// }
 </script>
 
 <Dialog {open} onclose={handleClose}>
@@ -140,7 +140,7 @@
 			</Button>
 		</div>
 
-		<input
+		<!-- <input
 			bind:this={fileInput}
 			type="file"
 			accept="image/*,video/*"
@@ -149,7 +149,6 @@
 			onchange={handleFileChange}
 		/>
 
-		<!-- Photo thumbnails -->
 		{#if photoUrls.length > 0}
 			<div class="photo-strip" role="list" aria-label="Added photos">
 				{#each photoUrls as url, i (url)}
@@ -169,7 +168,7 @@
 					</div>
 				{/each}
 			</div>
-		{/if}
+		{/if} -->
 
 		<div class="md-dialog__actions">
 			<Button variant="text" onclick={handleClose}>Cancel</Button>
@@ -194,7 +193,7 @@
 		display: grid;
 	}
 
-	.photo-strip {
+	/* .photo-strip {
 		display: flex;
 		gap: 8px;
 		overflow-x: auto;
@@ -244,7 +243,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-	}
+	} */
 
 	.dialog-body {
 		display: flex;
