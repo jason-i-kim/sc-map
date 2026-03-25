@@ -21,10 +21,15 @@
 	let showInfoWindow = $state<((place: Place) => void) | null>(null);
 	let visitsResult = $state<ReturnType<typeof getVisitsForPlace> | null>(null);
 
-	function handlePlaceSelect(place: Place, close: () => void) {
+	function handlePlaceSelect(place: Place | null) {
 		selectedPlace = place;
+		if (place === null) {
+			searchQuery = '';
+			return;
+		}
+
 		searchQuery = place.name;
-		close();
+
 		if (isSavedPlace(place)) {
 			visitsResult = getVisitsForPlace(place.id);
 			sheetOpen = true;
@@ -54,16 +59,7 @@
 		onsaveplace={() => {
 			dialogOpen = true;
 		}}
-		onplacechange={(place) => {
-			selectedPlace = place;
-
-			if (place === null || !isSavedPlace(place)) {
-				return;
-			}
-
-			visitsResult = getVisitsForPlace(place.id);
-			sheetOpen = true;
-		}}
+		onplacechange={handlePlaceSelect}
 	/>
 </div>
 
@@ -97,17 +93,50 @@
 				{#snippet leadingIcon()}
 					<Icon name="search" class="md-search-bar__icon" />
 				{/snippet}
+
+				{#snippet trailingIcons()}
+					{#if searchQuery}
+						<button
+							class="md-search-bar__icon-btn"
+							aria-label="Clear search"
+							type="button"
+							tabindex="-1"
+							onmousedown={(e) => e.preventDefault()}
+							onpointerdown={(e) => e.preventDefault()}
+							onclick={(e) => {
+								e.stopPropagation();
+								searchQuery = '';
+								selectedPlace = null;
+								sheetOpen = false;
+							}}
+						>
+							<Icon name="close" class="md-search-bar__icon" />
+						</button>
+					{/if}
+				{/snippet}
 			</SearchBar>
 		{/snippet}
 
 		{#snippet results({ value, close })}
 			{#await searchPlaces(value)}
-				<SearchResults places={[]} onlistitemclick={(place) => handlePlaceSelect(place, close)} />
+				<SearchResults
+					places={[]}
+					onlistitemclick={(place) => {
+						handlePlaceSelect(place);
+						close();
+					}}
+				/>
 			{:then places}
 				{#if places.length > 0}
 					<hr class="md-search-view__divider" aria-hidden="true" />
 				{/if}
-				<SearchResults {places} onlistitemclick={(place) => handlePlaceSelect(place, close)} />
+				<SearchResults
+					{places}
+					onlistitemclick={(place) => {
+						handlePlaceSelect(place);
+						close();
+					}}
+				/>
 			{/await}
 		{/snippet}
 	</SearchView>
