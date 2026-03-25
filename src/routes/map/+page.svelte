@@ -9,6 +9,7 @@
 	import { isSavedPlace, type Place } from '$lib/schemas/place';
 	import type { PageProps } from './$types';
 	import { getVisitsForPlace } from './visits.remote';
+	import Icon from '$lib/components/ui/icon/Icon.svelte';
 	import { searchPlaces } from './search.remote';
 
 	let { data }: PageProps = $props();
@@ -19,9 +20,6 @@
 	let searchQuery = $state('');
 	let showInfoWindow = $state<((place: Place) => void) | null>(null);
 	let visitsResult = $state<ReturnType<typeof getVisitsForPlace> | null>(null);
-
-	const searchIconPath =
-		'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z';
 
 	function handlePlaceSelect(place: Place, close: () => void) {
 		selectedPlace = place;
@@ -96,14 +94,7 @@
 				aria-expanded={open}
 			>
 				{#snippet leadingIcon()}
-					<svg
-						class="md-search-bar__icon"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-						fill="currentColor"
-					>
-						<path d={searchIconPath} />
-					</svg>
+					<Icon name="search" class="md-search-bar__icon" />
 				{/snippet}
 			</SearchBar>
 		{/snippet}
