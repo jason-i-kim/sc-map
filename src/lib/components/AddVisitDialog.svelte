@@ -6,9 +6,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionResult } from '@sveltejs/kit';
 	import ButtonGroup from './ui/button-group/ButtonGroup.svelte';
-	import RestaurantIcon from '$lib/icons/RestaurantIcon.svelte';
-	import LocalBarIcon from '$lib/icons/LocalBarIcon.svelte';
-	import BakeryIcon from '$lib/icons/BakeryIcon.svelte';
+	import Icon from './ui/icon/Icon.svelte';
 
 	type Props = {
 		open: boolean;
@@ -77,9 +75,9 @@
 	// }
 </script>
 
-{#snippet restaurantIcon()}<RestaurantIcon />{/snippet}
-{#snippet barIcon()}<LocalBarIcon />{/snippet}
-{#snippet bakeryIcon()}<BakeryIcon />{/snippet}
+{#snippet restaurantIcon()}<Icon name="restaurant" />{/snippet}
+{#snippet barIcon()}<Icon name="bar" />{/snippet}
+{#snippet bakeryIcon()}<Icon name="bakery" />{/snippet}
 
 <Dialog {open} onclose={handleClose}>
 	{#snippet headline()}<span class="headline-centered">{placeName}</span>{/snippet}

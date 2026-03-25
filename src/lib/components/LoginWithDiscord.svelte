@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_DISCORD_CLIENT_ID } from '$env/static/public';
 	import { page } from '$app/state';
-	import DiscordIcon from '$lib/icons/DiscordIcon.svelte';
+	import Icon from '$lib/components/ui/icon/Icon.svelte';
 	function discordAuthUrl(): string {
 		const url = new URL('https://discord.com/oauth2/authorize');
 		url.searchParams.set('client_id', PUBLIC_DISCORD_CLIENT_ID);
@@ -14,7 +14,7 @@
 
 <div class="container">
 	<a href={discordAuthUrl()} rel="external" class="login-button">
-		<span class="discord-icon"><DiscordIcon /></span>
+		<span class="discord-icon"><Icon name="discord" /></span>
 
 		<span>Continue with Discord</span>
 	</a>

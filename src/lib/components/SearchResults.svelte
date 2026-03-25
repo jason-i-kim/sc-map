@@ -5,10 +5,7 @@
 	import { CATEGORIES } from '$lib/categories';
 	import List from './ui/list/List.svelte';
 	import ListItem from './ui/list/ListItem.svelte';
-	import RestaurantIcon from '$lib/icons/RestaurantIcon.svelte';
-	import LocalBarIcon from '$lib/icons/LocalBarIcon.svelte';
-	import BakeryIcon from '$lib/icons/BakeryIcon.svelte';
-	import PinIcon from '$lib/icons/PinIcon.svelte';
+	import Icon from './ui/icon/Icon.svelte';
 
 	type Props = {
 		places: Place[];
@@ -32,14 +29,14 @@
 		return { isSaved: true, bgColor, iconColor, type: savedPlace.type };
 	}
 
-	function getIcon(type: SavedPlace['type']) {
+	function getIconName(type: SavedPlace['type']) {
 		switch (type) {
 			case 'RESTAURANT':
-				return RestaurantIcon;
+				return 'restaurant';
 			case 'BAR':
-				return LocalBarIcon;
+				return 'bar';
 			case 'BAKERY':
-				return BakeryIcon;
+				return 'bakery';
 		}
 	}
 </script>
@@ -48,7 +45,7 @@
 	{#each places as place (place.google_place_id)}
 		{@const indicator = getIndicator(place)}
 		{@const isSaved = indicator?.isSaved}
-		{@const Icon = isSaved && indicator.type ? getIcon(indicator.type) : null}
+		{@const iconName = isSaved && indicator.type ? getIconName(indicator.type) : null}
 		<ListItem
 			type="button"
 			role="option"
@@ -56,16 +53,16 @@
 			onclick={() => onlistitemclick(place)}
 		>
 			{#snippet leading()}
-				{#if isSaved && Icon}
+				{#if isSaved && iconName}
 					<div
 						class="indicator"
 						style="background-color: {indicator.bgColor}; color: {indicator.iconColor}"
 					>
-						<Icon size={16} />
+						<Icon name={iconName} size={16} />
 					</div>
 				{:else}
 					<div class="indicator unsaved">
-						<PinIcon size={20} />
+						<Icon name="pin" size={20} />
 					</div>
 				{/if}
 			{/snippet}
