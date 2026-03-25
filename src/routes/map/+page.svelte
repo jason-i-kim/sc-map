@@ -112,6 +112,9 @@
 			{#await searchPlaces(value)}
 				<SearchResults places={[]} onlistitemclick={(place) => handlePlaceSelect(place, close)} />
 			{:then places}
+				{#if places.length > 0}
+					<hr class="md-search-view__divider" aria-hidden="true" />
+				{/if}
 				<SearchResults {places} onlistitemclick={(place) => handlePlaceSelect(place, close)} />
 			{/await}
 		{/snippet}
@@ -138,8 +141,8 @@
 		position: absolute;
 		width: 100vw;
 		height: 100vh;
-		padding-left: 1rem;
-		padding-right: 1rem;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
 		padding-top: 1rem;
 		box-sizing: border-box;
 		pointer-events: none;

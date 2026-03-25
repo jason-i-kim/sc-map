@@ -177,27 +177,6 @@
 	>
 		<!-- Header -->
 		<div class="md-side-sheet__header">
-			<!-- Close button -->
-			<button
-				class="md-side-sheet__close"
-				type="button"
-				aria-label="Close"
-				onclick={requestClose}
-				bind:this={closeButtonEl}
-			>
-				<!-- Close icon (✕) -->
-				<svg
-					class="md-side-sheet__close-icon"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path
-						d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-					/>
-				</svg>
-			</button>
-
 			{#if title}
 				<span class="md-side-sheet__title">{title}</span>
 			{/if}
@@ -208,9 +187,6 @@
 				</div>
 			{/if}
 		</div>
-
-		<!-- Divider -->
-		<hr class="md-side-sheet__divider" aria-hidden="true" />
 
 		<!-- Body content -->
 		<div class="md-side-sheet__content">

@@ -31,8 +31,6 @@
 
 {#if isDesktop}
 	<SideSheet variant="standard" bind:open {onclose}>
-		<h2 class="place-name">{placeName}</h2>
-
 		<div class="action-bar">
 			<Button variant="tonal" onclick={onaddvisit}>
 				{#snippet icon()}
