@@ -5,7 +5,7 @@ import { VisitNotFoundError, VisitsDao } from '$lib/server/dao/visits';
 import { getGooglePlaceById } from '$lib/google-places';
 import { SavedPlaceSchema, type SavedPlace } from '$lib/schemas/saved-place';
 import { verifySessionCookie, SESSION_COOKIE_NAME } from '$lib/server/cookie';
-import { VisitInsertSchema, VisitUpdateSchema } from '$lib/server/dao/visits/types.js';
+import { VisitInsertSchema, VisitUpdateSchema } from '$lib/schemas/visit.js';
 
 const VisitInsertWithoutPlaceSchema = VisitInsertSchema.omit({ place_id: true });
 const VisitUpdateWithoutPlaceSchema = VisitUpdateSchema.omit({ place_id: true });

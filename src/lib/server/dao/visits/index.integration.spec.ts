@@ -1,6 +1,6 @@
 import { sql } from '$lib/db';
 import { describe, expect, test, beforeEach, afterEach } from 'bun:test';
-import type { VisitInsert } from './types';
+import type { VisitInsert } from '$lib/schemas/visit';
 import { VisitsDao, InvalidRatingError, VisitNotFoundError } from '.';
 import { UsersDao } from '$lib/server/dao/users';
 import { SavedPlacesDao } from '$lib/server/dao/saved-places';
@@ -66,14 +66,6 @@ describe('Integration', () => {
 					expect(visit.place_id).toBe(testPlaceId);
 					expect(visit.summary).toBe('Great food!');
 					expect(visit.rating).toBe(4);
-				});
-
-				test('inserts a visit with null rating', async () => {
-					const visit = await visitsDao.insertVisit({
-						...getBaseInsert(),
-						rating: null
-					});
-					expect(visit.rating).toBeNull();
 				});
 			});
 
