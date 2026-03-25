@@ -6,6 +6,9 @@
 	import { enhance } from '$app/forms';
 	import type { ActionResult } from '@sveltejs/kit';
 	import ButtonGroup from './ui/button-group/ButtonGroup.svelte';
+	import RestaurantIcon from '$lib/icons/RestaurantIcon.svelte';
+	import LocalBarIcon from '$lib/icons/LocalBarIcon.svelte';
+	import BakeryIcon from '$lib/icons/BakeryIcon.svelte';
 
 	type Props = {
 		open: boolean;
@@ -74,6 +77,10 @@
 	// }
 </script>
 
+{#snippet restaurantIcon()}<RestaurantIcon />{/snippet}
+{#snippet barIcon()}<LocalBarIcon />{/snippet}
+{#snippet bakeryIcon()}<BakeryIcon />{/snippet}
+
 <Dialog {open} onclose={handleClose}>
 	{#snippet headline()}<span class="headline-centered">{placeName}</span>{/snippet}
 	<form use:enhance={enhanceVisit} class="dialog-body" method="POST" action="/map?/addVisit">
@@ -121,10 +128,11 @@
 				items={[
 					{
 						value: 'RESTAURANT',
-						label: 'Restaurant'
+						label: 'Restaurant',
+						icon: restaurantIcon
 					},
-					{ value: 'BAR', label: 'Bar' },
-					{ value: 'BAKERY', label: 'Bakery' }
+					{ value: 'BAR', label: 'Bar', icon: barIcon },
+					{ value: 'BAKERY', label: 'Bakery', icon: bakeryIcon }
 				]}
 				aria-label="Location type"
 				class="type-toggle"
