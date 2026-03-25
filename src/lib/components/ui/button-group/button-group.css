@@ -72,6 +72,7 @@
 	white-space: nowrap;
 	height: 40px;
 	padding-inline: 24px;
+	flex: 1;
 
 	/* Typography (inherits from button tokens via --_* props) */
 	font-family: var(--md-sys-typescale-label-large-font);

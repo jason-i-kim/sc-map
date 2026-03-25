@@ -6,6 +6,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionResult } from '@sveltejs/kit';
 	import type { Place } from '$lib/schemas/place';
+	import ButtonGroup from './ui/button-group/ButtonGroup.svelte';
 
 	type Props = {
 		open: boolean;
@@ -123,6 +124,23 @@
 				supportingText="Date visited"
 				aria-label="Date visited"
 				bind:value={visitDate}
+			/>
+		</div>
+
+		<div class="field-row">
+			<ButtonGroup
+				toggleMode="single"
+				buttonVariant="filled"
+				items={[
+					{
+						value: 'RESTAURANT',
+						label: 'Restaurant'
+					},
+					{ value: 'BAR', label: 'Bar' },
+					{ value: 'BAKERY', label: 'Bakery' }
+				]}
+				aria-label="Location type"
+				class="type-toggle"
 			/>
 		</div>
 
@@ -262,5 +280,9 @@
 		margin: 0;
 		font-size: 0.75rem;
 		color: var(--md-sys-color-error, #b3261e);
+	}
+
+	:global(.type-toggle) {
+		width: 100%;
 	}
 </style>
