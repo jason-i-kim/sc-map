@@ -45,7 +45,7 @@
 	let visitDate = $state<string>('');
 	let photos = $state<File[]>([]);
 	// let photoUrls = $state<string[]>([]);
-	let fileInput = $state<HTMLInputElement | null>(null);
+	// let fileInput = $state<HTMLInputElement | null>(null);
 	let submitted = $state(false);
 
 	const MAX_REVIEW_LENGTH = 2000;
@@ -127,7 +127,7 @@
 		</div>
 
 		<!-- Add photos button -->
-		<div class="photos-row">
+		<!-- <div class="photos-row">
 			<Button variant="tonal" onclick={() => fileInput?.click()}>
 				{#snippet icon()}
 					<svg class="md-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -138,7 +138,7 @@
 				{/snippet}
 				Add photos &amp; videos
 			</Button>
-		</div>
+		</div> -->
 
 		<!-- <input
 			bind:this={fileInput}
@@ -189,11 +189,11 @@
 		width: 100%;
 	}
 
-	.photos-row {
+	/* .photos-row {
 		display: grid;
 	}
 
-	/* .photo-strip {
+	 .photo-strip {
 		display: flex;
 		gap: 8px;
 		overflow-x: auto;
