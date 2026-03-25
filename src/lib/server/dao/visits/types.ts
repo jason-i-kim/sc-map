@@ -5,7 +5,7 @@ export const VisitSchema = z.object({
 	user_id: z.coerce.bigint(),
 	place_id: z.coerce.bigint(),
 	summary: z.string(),
-	rating: z.number().min(1).max(5).nullable(),
+	rating: z.coerce.number().min(1).max(5).nullable(),
 	visited_at: z.coerce.date(),
 	created_at: z.coerce.date(),
 	updated_at: z.coerce.date()
