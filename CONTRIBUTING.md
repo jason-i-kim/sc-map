@@ -142,5 +142,3 @@ Key rules (enforced by pre-commit hooks via `prek`):
    src/lib/db/migrations/<timestamp>_description.down.sql
    ```
 4. Open a pull request against `staging` with a clear description of what changed and why.
-
-See [DESIGN_DOC.md](./DESIGN_DOC.md) for the full architecture and data model.
